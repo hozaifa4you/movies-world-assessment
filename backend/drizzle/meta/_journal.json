@@ -8,6 +8,13 @@
       "when": 1758452263128,
       "tag": "0000_create_users_table",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1758453512351,
+      "tag": "0001_add_role_status_to_users_table",
+      "breakpoints": true
     }
   ]
 }
