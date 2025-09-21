@@ -5,17 +5,16 @@ import jwtConfig from '../config/jwt.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
-import { DatabaseModule } from 'src/database/database.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
    imports: [
-      DatabaseModule,
       JwtModule.registerAsync(jwtConfig.asProvider()),
       ConfigModule.forFeature(jwtConfig),
+      UserModule,
    ],
-   providers: [JwtStrategy, LocalStrategy, AuthService, UserService],
+   providers: [JwtStrategy, LocalStrategy, AuthService],
    controllers: [AuthController],
 })
 export class AuthModule {}

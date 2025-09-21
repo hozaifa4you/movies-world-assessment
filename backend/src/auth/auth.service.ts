@@ -20,19 +20,12 @@ export class AuthService {
 
    public async signup(signupDto: SignupDTO) {
       await this.userService.createUser(signupDto, RoleEnum.User);
-
-      return { success: true };
    }
 
    public async signin(user: AuthUserType) {
       const tokens = await this.generateTokens(user.id);
       return { user, ...tokens };
    }
-
-   public async forgotPassword() {}
-   public async resetPassword() {}
-   public async signupWithGithub() {}
-   public async signupWithGoogle() {}
 
    public async validateUser(email: string, password: string) {
       const user = await this.userService.findUserByEmail(email);
@@ -68,6 +61,11 @@ export class AuthService {
 
       return authUser;
    }
+
+   public async forgotPassword() {}
+   public async resetPassword() {}
+   public async signupWithGithub() {}
+   public async signupWithGoogle() {}
 
    private async generateTokens(userId: number) {
       const payload: JwtPayload = { sub: userId };
