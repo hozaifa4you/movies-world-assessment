@@ -1,10 +1,11 @@
 'use client';
 import * as React from 'react';
 import {
-   IconChartBar,
+   IconAB2,
+   IconCurrencyDollar,
    IconDashboard,
-   IconFolder,
-   IconListDetails,
+   IconDeviceTv,
+   IconMovie,
    IconUsers,
 } from '@tabler/icons-react';
 import { NavMain } from '@/components/nav-main';
@@ -23,29 +24,34 @@ import { Logo2 } from './logo-dashboard';
 const data = {
    navMain: [
       {
-         title: 'Dashboard',
-         url: '#',
+         title: 'Analytics',
+         url: '/control-panel/analytics',
          icon: IconDashboard,
       },
       {
-         title: 'Lifecycle',
-         url: '#',
-         icon: IconListDetails,
+         title: 'Movies',
+         url: '/control-panel/movies',
+         icon: IconMovie,
       },
       {
-         title: 'Analytics',
-         url: '#',
-         icon: IconChartBar,
+         title: 'Tv Shows',
+         url: '/control-panel/tv-shows',
+         icon: IconDeviceTv,
       },
       {
-         title: 'Projects',
-         url: '#',
-         icon: IconFolder,
-      },
-      {
-         title: 'Team',
-         url: '#',
+         title: 'Users',
+         url: '/control-panel/users',
          icon: IconUsers,
+      },
+      {
+         title: 'Payments',
+         url: '/control-panel/payments',
+         icon: IconCurrencyDollar,
+      },
+      {
+         title: 'Subscriptions',
+         url: '/control-panel/subscriptions',
+         icon: IconAB2,
       },
    ],
 };
