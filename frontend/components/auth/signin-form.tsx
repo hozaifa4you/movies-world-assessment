@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { signinAction } from '@/actions/auth.action';
 import { toast } from 'sonner';
 import Form from 'next/form';
+import { Role } from '@/types/session';
 
 const SigninForm = () => {
    const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +19,15 @@ const SigninForm = () => {
          toast.error('Signin', {
             description: state.message,
          });
+      }
+
+      if (state?.success) {
+         const redirectUrl =
+            state.role === Role.USER
+               ? '/my-watchlist'
+               : '/control-panel/analytics';
+
+         window.location.href = redirectUrl;
       }
    }, [state?.message, state?.success]);
 

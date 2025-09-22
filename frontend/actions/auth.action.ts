@@ -84,7 +84,7 @@ async function signinAction(initialState: unknown, formData: FormData) {
       user: result.user,
    });
 
-   return redirect('/dashboard');
+   return { success: true, role: result.user.role };
 }
 
 export { signupAction, signinAction };
