@@ -143,3 +143,19 @@ button {
    --primary: #155dfb;
    --secondary: #ffb900;
 } */
+
+@utility section-padding {
+   padding-block: 2rem;
+
+   @media (min-width: 640px) {
+      padding-block: 3rem;
+   }
+
+   @media (min-width: 1024px) {
+      padding-block: 4rem;
+   }
+
+   @media (min-width: 1280px) {
+      padding-block: 5rem;
+   }
+}
