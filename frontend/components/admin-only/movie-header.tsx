@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,6 +10,7 @@ import {
    SelectValue,
 } from '@/components/ui/select';
 import { Search, Filter, Plus, SlidersHorizontal } from 'lucide-react';
+import Link from 'next/link';
 
 const MoveHeader = () => {
    return (
@@ -22,10 +23,13 @@ const MoveHeader = () => {
                   Manage your movie collection ({10} movies)
                </p>
             </div>
-            <Button className="bg-primary hover:bg-primary/90 self-start">
-               <Plus className="mr-2 h-4 w-4" />
+            <Link
+               href="/control-panel/movies/new"
+               className={buttonVariants({})}
+            >
+               <Plus />
                Add Movie
-            </Button>
+            </Link>
          </div>
 
          {/* Search and Filters */}
