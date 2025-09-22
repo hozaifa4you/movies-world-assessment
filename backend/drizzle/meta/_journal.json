@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1758452263128,
-      "tag": "0000_create_users_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1758453512351,
-      "tag": "0001_add_role_status_to_users_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1758534159511,
-      "tag": "0002_add_indexing_to_users_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1758537421900,
-      "tag": "0003_redundant_lucky_pierre",
+      "when": 1758548508979,
+      "tag": "0000_generate_new_migration_after_removed",
       "breakpoints": true
     }
   ]

@@ -18,9 +18,9 @@ export const moviesActors = pgTable(
       actorId: integer('actor_id')
          .notNull()
          .references(() => actors.id, { onDelete: 'cascade' }),
-      character: varchar({ length: 255 }), // Character name played by the actor
-      role: varchar({ length: 50 }).notNull().default('actor'), // actor, director, producer, etc.
-      order: integer().notNull().default(0), // For ordering actors (main cast first)
+      character: varchar({ length: 255 }),
+      role: varchar({ length: 50 }).notNull().default('actor'),
+      order: integer().notNull().default(0),
    },
    (t) => [
       primaryKey({ columns: [t.movieId, t.actorId] }),

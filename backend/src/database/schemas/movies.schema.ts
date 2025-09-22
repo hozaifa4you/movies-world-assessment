@@ -29,7 +29,7 @@ export const movies = pgTable(
       shortDescription: varchar({ length: 500 }),
       director: varchar({ length: 100 }).notNull(),
       releaseDate: date('release_date'),
-      genre: varchar().notNull(),
+      genre: varchar().notNull().array(),
       rating: decimal({ precision: 3, scale: 1 }),
       posterUrl: varchar('poster_url', { length: 500 }),
       videoUrl: varchar('video_url', { length: 500 }),

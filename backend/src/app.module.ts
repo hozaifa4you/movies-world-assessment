@@ -8,6 +8,7 @@ import jwtConfig from './config/jwt.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ActorModule } from './actor/actor.module';
+import { MovieModule } from './movie/movie.module';
 
 @Module({
    imports: [
@@ -19,6 +20,7 @@ import { ActorModule } from './actor/actor.module';
       AuthModule,
       UserModule,
       ActorModule,
+      MovieModule,
    ],
    controllers: [AppController],
    providers: [AppService],
