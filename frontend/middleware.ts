@@ -5,7 +5,7 @@ import { Role } from '@/types/session';
 const routePermissions = {
    guestOnly: ['/signin', '/signup', '/forgot-password'],
    protected: {
-      user: ['/dashboard', '/my-watchlist', '/my-rated', '/profile'],
+      user: ['/my-watchlist', '/my-rated', '/profile', '/billing'],
       admin: ['/control-panel'],
    },
 };
@@ -61,7 +61,9 @@ export async function middleware(request: NextRequest) {
    }
 
    if (!hasRequiredRole(session.user.role, requiredRole)) {
-      const unauthorizedUrl = new URL('/dashboard', request.url);
+      const redirectUrl =
+         session.user.role === Role.USER ? '/my-watchlist' : '/analytics';
+      const unauthorizedUrl = new URL(redirectUrl, request.url);
       return NextResponse.redirect(unauthorizedUrl);
    }
 
@@ -79,5 +81,8 @@ export const config = {
       '/signup',
       '/forgot-password',
       '/reset-password',
+
+      // Admin
+      '/control-panel/:path*',
    ],
 };
