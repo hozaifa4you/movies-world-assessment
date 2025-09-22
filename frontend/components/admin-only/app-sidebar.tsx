@@ -7,6 +7,7 @@ import {
    IconDeviceTv,
    IconMovie,
    IconUsers,
+   IconUserScan,
 } from '@tabler/icons-react';
 import { NavMain } from '@/components/nav-main';
 import { NavUser, NavUserProps } from '@/components/nav-user';
@@ -37,6 +38,11 @@ const data = {
          title: 'Tv Shows',
          url: '/control-panel/tv-shows',
          icon: IconDeviceTv,
+      },
+      {
+         title: 'Actors',
+         url: '/control-panel/actors',
+         icon: IconUserScan,
       },
       {
          title: 'Users',
