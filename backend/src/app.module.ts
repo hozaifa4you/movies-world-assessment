@@ -7,6 +7,7 @@ import appConfig from './config/app.config';
 import jwtConfig from './config/jwt.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ActorModule } from './actor/actor.module';
 
 @Module({
    imports: [
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
       DatabaseModule,
       AuthModule,
       UserModule,
+      ActorModule,
    ],
    controllers: [AppController],
    providers: [AppService],
