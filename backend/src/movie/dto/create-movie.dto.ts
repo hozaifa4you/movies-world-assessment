@@ -6,12 +6,11 @@ import {
    IsUrl,
    MaxLength,
    IsArray,
-   ArrayMaxSize,
    IsPositive,
    IsEnum,
    Min,
    Max,
-   IsDecimal,
+   IsNumber,
    ArrayNotEmpty,
    IsInt,
    ValidateNested,
@@ -114,24 +113,24 @@ export class CreateMovieDto {
    country?: string;
 
    @IsOptional()
-   @IsDecimal(
-      { decimal_digits: '2' },
+   @IsNumber(
+      { maxDecimalPlaces: 2 },
       { message: 'Budget must be a decimal with 2 decimal places' },
    )
    @Min(0, { message: 'Budget must be at least 0' })
    budget?: number;
 
    @IsOptional()
-   @IsDecimal(
-      { decimal_digits: '2' },
+   @IsNumber(
+      { maxDecimalPlaces: 2 },
       { message: 'Revenue must be a decimal with 2 decimal places' },
    )
    @Min(0, { message: 'Revenue must be at least 0' })
    revenue?: number;
 
    @IsOptional()
-   @IsDecimal(
-      { decimal_digits: '1' },
+   @IsNumber(
+      { maxDecimalPlaces: 1 },
       { message: 'IMDb rating must be a decimal with 1 decimal place' },
    )
    @Min(0.0, { message: 'IMDb rating must be at least 0.0' })
@@ -149,21 +148,6 @@ export class CreateMovieDto {
    @IsOptional()
    @IsEnum(MovieStatus, { message: 'Status must be a valid movie status' })
    status?: MovieStatus = MovieStatus.DRAFT;
-
-   // Actor relationships
-   @IsOptional()
-   @IsArray()
-   @ArrayNotEmpty({ message: 'Actor IDs array cannot be empty if provided' })
-   @ArrayMaxSize(50, {
-      message: 'Cannot assign more than 50 actors to a movie',
-   })
-   @IsInt({ each: true, message: 'Each actor ID must be an integer' })
-   @IsPositive({
-      each: true,
-      message: 'Each actor ID must be a positive number',
-   })
-   @Type(() => Number)
-   actorIds?: number[];
 
    // Optional actor details for the many-to-many relationship
    @IsOptional()
