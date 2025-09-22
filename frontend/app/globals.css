@@ -4,60 +4,6 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-   --background: #ffffff;
-   --foreground: #0f172a;
-   --card: #ffffff;
-   --card-foreground: #0f172a;
-   --popover: #ffffff;
-   --popover-foreground: #0f172a;
-   --primary: #155dfb;
-   --primary-foreground: #ffffff;
-   --secondary: #ffb900;
-   --secondary-foreground: #0f172a;
-   --muted: #f1f5f9;
-   --muted-foreground: #64748b;
-   --accent: #f1f5f9;
-   --accent-foreground: #0f172a;
-   --destructive: #ef4444;
-   --destructive-foreground: #ffffff;
-   --border: #e2e8f0;
-   --input: #e2e8f0;
-   --ring: #155dfb;
-   --chart-1: #155dfb;
-   --chart-2: #ffb900;
-   --chart-3: #16a34a;
-   --chart-4: #f97316;
-   --chart-5: #6366f1;
-   --sidebar: #f8fafc;
-   --sidebar-foreground: #0f172a;
-   --sidebar-primary: #155dfb;
-   --sidebar-primary-foreground: #ffffff;
-   --sidebar-accent: #e2e8f0;
-   --sidebar-accent-foreground: #0f172a;
-   --sidebar-border: #e2e8f0;
-   --sidebar-ring: #155dfb;
-   --font-sans: Inter;
-   --font-serif: serif;
-   --font-mono: monospace;
-   --radius: 0.5rem;
-   --shadow-2xs: 0px 4px 10px 0px hsl(0 0% 0% / 0.05);
-   --shadow-xs: 0px 4px 10px 0px hsl(0 0% 0% / 0.05);
-   --shadow-sm:
-      0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
-   --shadow:
-      0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
-   --shadow-md:
-      0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 2px 4px -1px hsl(0 0% 0% / 0.1);
-   --shadow-lg:
-      0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 4px 6px -1px hsl(0 0% 0% / 0.1);
-   --shadow-xl:
-      0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
-   --shadow-2xl: 0px 4px 10px 0px hsl(0 0% 0% / 0.25);
-   --tracking-normal: normal;
-   --spacing: 0.25rem;
-}
-
-.dark {
    --background: #020817;
    --foreground: #f8fafc;
    --card: #020817;
@@ -144,8 +90,9 @@
    --color-sidebar-ring: var(--sidebar-ring);
 
    --font-sans: var(--font-sans);
-   --font-mono: var(--font-mono);
+   --font-mono: var(--font-geist-mono);
    --font-serif: var(--font-serif);
+   --font-main: var(--font-geist-sans);
 
    --radius-sm: calc(var(--radius) - 4px);
    --radius-md: calc(var(--radius) - 2px);
@@ -180,6 +127,12 @@ body {
    body {
       @apply bg-background text-foreground;
    }
+}
+
+@utility container {
+   padding-inline: 1rem;
+   margin-inline: auto;
+   max-width: 1230px;
 }
 
 /* :root {
