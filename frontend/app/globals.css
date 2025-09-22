@@ -135,6 +135,10 @@ body {
    max-width: 1230px;
 }
 
+button {
+   @apply hover:cursor-pointer;
+}
+
 /* :root {
    --primary: #155dfb;
    --secondary: #ffb900;
