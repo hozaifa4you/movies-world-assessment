@@ -1,9 +1,16 @@
-import { AppSidebar } from '@/components/app-sidebar';
+import { AppSidebar } from '@/components/admin-only/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { getSession } from '@/lib/sessions';
+import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
-const AdminLayout = ({ children }: PropsWithChildren) => {
+const AdminLayout = async ({ children }: PropsWithChildren) => {
+   const session = await getSession();
+   if (!session) {
+      redirect('/signup');
+   }
+
    return (
       <SidebarProvider
          style={
@@ -13,7 +20,7 @@ const AdminLayout = ({ children }: PropsWithChildren) => {
             } as React.CSSProperties
          }
       >
-         <AppSidebar variant="inset" />
+         <AppSidebar variant="inset" user={session.user} />
          <SidebarInset>
             <SiteHeader />
             <div className="flex flex-1 flex-col">
