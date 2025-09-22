@@ -15,6 +15,13 @@
       "when": 1758453512351,
       "tag": "0001_add_role_status_to_users_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758534159511,
+      "tag": "0002_add_indexing_to_users_table",
+      "breakpoints": true
     }
   ]
 }
