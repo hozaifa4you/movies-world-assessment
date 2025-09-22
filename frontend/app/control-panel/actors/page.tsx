@@ -1,7 +1,6 @@
 import { ActorCard } from '@/components/admin-only/actor-card';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
    Select,
    SelectContent,
@@ -12,6 +11,7 @@ import {
 import { Search, Plus, SlidersHorizontal } from 'lucide-react';
 import { Actor } from '@/types/actors';
 import { fetchWithAuth } from '@/lib/authFetch';
+import Link from 'next/link';
 
 const ActorsPage = async () => {
    const response = await fetchWithAuth('/actors');
@@ -32,10 +32,13 @@ const ActorsPage = async () => {
                      Manage your actor profiles ({actors.length} actors)
                   </p>
                </div>
-               <Button className="bg-primary hover:bg-primary/90 self-start">
+               <Link
+                  className={buttonVariants({})}
+                  href="/control-panel/actors/new"
+               >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Actor
-               </Button>
+               </Link>
             </div>
 
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

@@ -28,7 +28,6 @@ const eslintConfig = [
          ],
       },
    },
-   eslintPluginPrettier,
 ];
 
 export default eslintConfig;
