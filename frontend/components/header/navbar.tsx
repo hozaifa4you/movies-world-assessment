@@ -12,7 +12,7 @@ const items = [
 
 const Navbar = () => {
    return (
-      <nav className="sticky top-0 w-full px-6 py-4">
+      <nav className="sticky top-0 z-50 w-full bg-gradient-to-b from-black to-gray-900 px-6 py-4 shadow-md backdrop-blur-md">
          <div className="container flex items-center justify-between lg:gap-10">
             {/* Logo */}
             <Logo />
@@ -39,7 +39,11 @@ const Navbar = () => {
                   ))}
                </menu>
 
-               <Button className="" size="icon" variant="default">
+               <Button
+                  className="text-sm font-medium"
+                  size="icon"
+                  variant="default"
+               >
                   En
                </Button>
 
