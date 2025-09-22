@@ -1,8 +1,16 @@
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-const Logo = () => {
+interface LogoProps {
+   className?: string;
+}
+
+const Logo = ({ className }: LogoProps) => {
    return (
-      <Link href="/" className="flex shrink-0 items-center gap-1">
+      <Link
+         href="/"
+         className={cn('flex shrink-0 items-center gap-1', className)}
+      >
          <svg
             width="25"
             height="25"
