@@ -6,25 +6,11 @@ import { Eye, EyeOff, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
-const SignupForm = () => {
+const SigninForm = () => {
    const [showPassword, setShowPassword] = useState(false);
 
    return (
       <form className="space-y-6">
-         <div className="space-y-2">
-            <Label htmlFor="name" className="font-medium text-white">
-               Full Name
-            </Label>
-            <Input
-               id="name"
-               name="name"
-               type="text"
-               placeholder="Enter your full name"
-               required
-               className="h-12 border-slate-600 bg-slate-800/50 text-white placeholder:text-slate-400 focus:border-sky-400 focus:ring-sky-400/20"
-            />
-         </div>
-
          <div className="space-y-2">
             <Label htmlFor="email" className="font-medium text-white">
                Email Address
@@ -70,39 +56,22 @@ const SignupForm = () => {
             type="submit"
             className="h-12 w-full font-mono text-lg font-semibold text-white shadow-lg transition-all hover:scale-[1.02]"
          >
-            Create Account
+            Login
          </Button>
 
          <div className="space-y-4 text-center">
             <p className="text-sm text-slate-400">
-               Already have an account?{' '}
+               Don't have an account?{' '}
                <Link
-                  href="/signin"
+                  href="/signup"
                   className="text-secondary hover:text-secondary/90 font-medium transition-colors"
                >
-                  Sign in
+                  Sign up
                </Link>
             </p>
-
-            <div className="text-xs text-slate-500">
-               By creating an account, you agree to our{' '}
-               <Link
-                  href="/terms"
-                  className="text-secondary hover:text-secondary/90"
-               >
-                  Terms of Service
-               </Link>{' '}
-               and{' '}
-               <Link
-                  href="/privacy"
-                  className="text-secondary hover:text-secondary/90"
-               >
-                  Privacy Policy
-               </Link>
-            </div>
          </div>
       </form>
    );
 };
 
-export { SignupForm };
+export { SigninForm };
