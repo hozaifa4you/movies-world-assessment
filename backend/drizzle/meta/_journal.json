@@ -22,6 +22,13 @@
       "when": 1758534159511,
       "tag": "0002_add_indexing_to_users_table",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758537421900,
+      "tag": "0003_redundant_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }
