@@ -10,6 +10,7 @@ import {
    HttpCode,
    HttpStatus,
    Query,
+   ParseIntPipe,
 } from '@nestjs/common';
 import { ActorService } from './actor.service';
 import { CreateActorDto } from './dto/create-actor.dto';
@@ -24,12 +25,11 @@ import {
 } from 'src/common/pipes/pagination.pipe';
 
 @Controller('actors')
-@UseGuards(JwtGuard)
 export class ActorController {
    constructor(private readonly actorService: ActorService) {}
 
    @HttpCode(HttpStatus.CREATED)
-   @UseGuards(RolesGuard)
+   @UseGuards(JwtGuard, RolesGuard)
    @Roles(RoleEnum.Admin)
    @Post()
    async create(@Body() createActorDto: CreateActorDto) {
@@ -43,13 +43,21 @@ export class ActorController {
    }
 
    @HttpCode(HttpStatus.OK)
-   @Get(':id')
-   findOne(@Param('id') id: string) {
-      return this.actorService.findOne(+id);
+   @UseGuards(JwtGuard, RolesGuard)
+   @Roles(RoleEnum.Admin)
+   @Get('search')
+   search(@Query('q') query: string) {
+      return this.actorService.search(query);
    }
 
    @HttpCode(HttpStatus.OK)
-   @UseGuards(RolesGuard)
+   @Get(':id')
+   findOne(@Param('id', ParseIntPipe) id: number) {
+      return this.actorService.findOne(id);
+   }
+
+   @HttpCode(HttpStatus.OK)
+   @UseGuards(JwtGuard, RolesGuard)
    @Roles(RoleEnum.Admin)
    @Patch(':id')
    update(@Param('id') id: string, @Body() updateActorDto: UpdateActorDto) {
@@ -57,10 +65,10 @@ export class ActorController {
    }
 
    @HttpCode(HttpStatus.NO_CONTENT)
-   @UseGuards(RolesGuard)
+   @UseGuards(JwtGuard, RolesGuard)
    @Roles(RoleEnum.Admin)
    @Delete(':id')
-   remove(@Param('id') id: string) {
-      return this.actorService.remove(+id);
+   remove(@Param('id', ParseIntPipe) id: number) {
+      return this.actorService.remove(id);
    }
 }

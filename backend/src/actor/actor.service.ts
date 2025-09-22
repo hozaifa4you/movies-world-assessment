@@ -5,7 +5,7 @@ import { DB } from 'src/database/database.module';
 import type { Database } from 'src/database/types';
 import { actors } from 'src/database/schemas';
 import type { PaginationQuery } from 'src/common/pipes/pagination.pipe';
-import { count, asc, eq } from 'drizzle-orm';
+import { count, asc, eq, ilike } from 'drizzle-orm';
 
 @Injectable()
 export class ActorService {
@@ -87,5 +87,20 @@ export class ActorService {
       if (!deletedActor) {
          throw new NotFoundException('Actor not found');
       }
+   }
+
+   async search(query: string) {
+      const data = await this.db
+         .select({
+            id: actors.id,
+            name: actors.name,
+            avatarUrl: actors.photoUrl,
+         })
+         .from(actors)
+         .where(ilike(actors.name, `%${query}%`))
+         .orderBy(asc(actors.name))
+         .limit(10);
+
+      return data;
    }
 }
