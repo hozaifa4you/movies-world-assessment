@@ -21,10 +21,13 @@ const eslintConfig = [
          'build/**',
          'next-env.d.ts',
       ],
-   },
-   {
       rules: {
          'no-console': ['warn', { allow: ['warn', 'error'] }],
+         '@typescript-eslint/no-unused-vars': [
+            'warn',
+            { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+         ],
+         'prettier/prettier': ['error', {}, { usePrettierrc: true }],
       },
    },
 ];

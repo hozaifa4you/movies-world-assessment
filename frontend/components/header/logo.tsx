@@ -4,8 +4,8 @@ const Logo = () => {
    return (
       <Link href="/" className="flex shrink-0 items-center gap-1">
          <svg
-            width="30"
-            height="30"
+            width="25"
+            height="25"
             viewBox="0 0 52 52"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
