@@ -4,13 +4,49 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Eye, EyeOff, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
+import Form from 'next/form';
+import { signupAction } from '@/actions/auth.action';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { stat } from 'fs';
 
 const SignupForm = () => {
    const [showPassword, setShowPassword] = useState(false);
+   const [state, action, pending] = useActionState(signupAction, null);
+   const router = useRouter();
+
+   useEffect(() => {
+      if (state?.success && state?.message) {
+         toast.success('Signup', {
+            description: state.message,
+            duration: 2000,
+         });
+      }
+
+      if (!state?.success && state?.message) {
+         toast.error('Signup', {
+            description: state.message,
+         });
+      }
+   }, [state?.message, state?.success]);
+
+   useEffect(() => {
+      let timeout: NodeJS.Timeout;
+
+      if (state?.success) {
+         timeout = setTimeout(() => {
+            router.push('/signin');
+         }, 2000);
+      }
+
+      return () => {
+         clearTimeout(timeout);
+      };
+   }, [router, state?.success]);
 
    return (
-      <form className="space-y-6">
+      <Form action={action} className="space-y-6">
          <div className="space-y-2">
             <Label htmlFor="name" className="font-medium text-white">
                Full Name
@@ -20,9 +56,15 @@ const SignupForm = () => {
                name="name"
                type="text"
                placeholder="Enter your full name"
-               required
                className="h-12 border-slate-600 bg-slate-800/50 text-white placeholder:text-slate-400 focus:border-sky-400 focus:ring-sky-400/20"
+               defaultValue={(state?.state?.name as string) ?? ''}
             />
+
+            {state?.errors?.name && (
+               <p className="text-secondary mt-1 text-sm">
+                  {state.errors.name}
+               </p>
+            )}
          </div>
 
          <div className="space-y-2">
@@ -32,11 +74,14 @@ const SignupForm = () => {
             <Input
                id="email"
                name="email"
-               type="email"
+               // type="email"
                placeholder="Enter your email"
-               required
+               defaultValue={(state?.state?.email as string) ?? ''}
                className="h-12 border-slate-600 bg-slate-800/50 text-white placeholder:text-slate-400 focus:border-sky-400 focus:ring-sky-400/20"
             />
+            {state?.errors?.email && (
+               <p className="text-secondary text-sm">{state.errors.email}</p>
+            )}
          </div>
 
          <div className="space-y-2">
@@ -49,7 +94,6 @@ const SignupForm = () => {
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Create a strong password"
-                  required
                   className="h-12 border-slate-600 bg-slate-800/50 pr-12 text-white placeholder:text-slate-400 focus:border-sky-400 focus:ring-sky-400/20"
                />
                <button
@@ -64,11 +108,17 @@ const SignupForm = () => {
                   )}
                </button>
             </div>
+
+            {state?.errors?.password && (
+               <p className="text-secondary text-sm">{state.errors.password}</p>
+            )}
          </div>
 
          <Button
             type="submit"
-            className="h-12 w-full font-mono text-lg font-semibold text-white shadow-lg transition-all hover:scale-[1.02]"
+            isLoading={pending}
+            size="lg"
+            className="w-full font-mono shadow-lg transition-all hover:scale-[1.02]"
          >
             Create Account
          </Button>
@@ -101,7 +151,7 @@ const SignupForm = () => {
                </Link>
             </div>
          </div>
-      </form>
+      </Form>
    );
 };
 
