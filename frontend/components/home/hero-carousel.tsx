@@ -132,7 +132,10 @@ const HeroCarousel = () => {
                         </p>
                      </div>
 
-                     <Button className="group w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 py-3 font-semibold text-white transition-all duration-300 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:shadow-blue-500/25 lg:py-4">
+                     <Button
+                        className="group w-full font-semibold text-white transition-all"
+                        size="lg"
+                     >
                         <PlayIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
                         WATCH NOW
                      </Button>

@@ -19,7 +19,10 @@ const SelectedMovieSection = () => {
                      Iaculis mollis suscipit maecenas amet eget.
                   </p>
 
-                  <Button className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white transition-all duration-300 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:shadow-blue-500/25">
+                  <Button
+                     size="lg"
+                     className="font-semibold transition-all duration-300"
+                  >
                      WATCH NOW
                   </Button>
                </div>

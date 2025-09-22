@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useState } from 'react';
+import { SectionHeader } from '../header/section-header';
 
 const RatingSection = () => {
    const [ratedMoviesIndex, setRatedMoviesIndex] = useState(0);
@@ -64,16 +65,7 @@ const RatingSection = () => {
    return (
       <section className="bg-gradient-to-b from-black to-gray-900 py-16 md:py-24">
          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 text-center">
-               <h2 className="mb-4 text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
-                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                     MOVIES YOU
-                  </span>{' '}
-                  <span className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">
-                     RATED
-                  </span>
-               </h2>
-            </div>
+            <SectionHeader titlePrimary="MOVIES YOU" titleSecondary="RATED" />
 
             <div className="relative">
                {/* Navigation Arrows */}
