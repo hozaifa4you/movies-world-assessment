@@ -417,9 +417,7 @@ const CreateMovePage = () => {
                      <CardTitle>Actors</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                     <div className="relative flex gap-2">
-                        <SearchActor />
-                     </div>
+                     <SearchActor />
                   </CardContent>
                </Card>
             </div>
