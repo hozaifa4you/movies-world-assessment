@@ -4,7 +4,7 @@ import { UpdateActorDto } from './dto/update-actor.dto';
 import { DB } from 'src/database/database.module';
 import type { Database } from 'src/database/types';
 import { actors } from 'src/database/schemas';
-import { PaginationDto } from 'src/common/dots/pagination.dto';
+import type { PaginationQuery } from 'src/common/pipes/pagination.pipe';
 import { count, asc, eq } from 'drizzle-orm';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class ActorService {
       return returning[0];
    }
 
-   async findAll(pagination: PaginationDto) {
+   async findAll(pagination: PaginationQuery) {
       const [totalResult] = await this.db
          .select({ count: count() })
          .from(actors);
@@ -34,9 +34,9 @@ export class ActorService {
          .limit(pagination.take)
          .offset(pagination.skip);
 
-      const totalPages = Math.ceil(total / pagination.pageSize!);
-      const hasNextPage = pagination.page! < totalPages;
-      const hasPrevPage = pagination.page! > 1;
+      const totalPages = Math.ceil(total / pagination.pageSize);
+      const hasNextPage = pagination.page < totalPages;
+      const hasPrevPage = pagination.page > 1;
 
       return {
          data,

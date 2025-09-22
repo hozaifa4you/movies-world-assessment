@@ -18,7 +18,10 @@ import { JwtGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleEnum } from 'src/database/schemas';
-import { PaginationDto } from 'src/common/dots/pagination.dto';
+import {
+   PaginationPipe,
+   type PaginationQuery,
+} from 'src/common/pipes/pagination.pipe';
 
 @Controller('actors')
 @UseGuards(JwtGuard)
@@ -35,7 +38,7 @@ export class ActorController {
 
    @HttpCode(HttpStatus.OK)
    @Get()
-   findAll(@Query() pagination: PaginationDto) {
+   findAll(@Query(PaginationPipe) pagination: PaginationQuery) {
       return this.actorService.findAll(pagination);
    }
 

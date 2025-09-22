@@ -16,7 +16,14 @@ async function bootstrap() {
       credentials: true,
    });
    app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, forbidUnknownValues: true }),
+      new ValidationPipe({
+         whitelist: true,
+         forbidUnknownValues: true,
+         transform: true,
+         transformOptions: {
+            enableImplicitConversion: true,
+         },
+      }),
    );
    app.setGlobalPrefix('api/v1');
 
