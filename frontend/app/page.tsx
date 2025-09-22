@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/header/navbar';
 import { HeroSection } from '@/components/home/hero-section';
 import { MyMoviesSection } from '@/components/home/my-movies-section';
@@ -16,6 +17,7 @@ const HomePage = () => {
          <RatingSection />
          <WatchListSection />
          <MyMoviesSection />
+         <Footer />
       </main>
    );
 };
