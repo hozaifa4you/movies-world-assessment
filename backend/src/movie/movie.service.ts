@@ -10,7 +10,7 @@ import {
    type NewMovie,
    type NewMoviesActors,
 } from 'src/database/schemas';
-import { eq, desc, count } from 'drizzle-orm';
+import { eq, desc, count, ilike, and, gte, lte, sql, or } from 'drizzle-orm';
 import { PaginationQuery } from 'src/common/pipes/pagination.pipe';
 
 @Injectable()
@@ -78,17 +78,48 @@ export class MovieService {
       });
    }
 
-   async findAll(pagination: PaginationQuery) {
+   async findAll(
+      pagination: PaginationQuery,
+      search?: string,
+      genre?: string,
+      year?: string,
+      rating?: string,
+   ) {
       const { page, pageSize } = pagination;
       const offset = (page - 1) * pageSize;
 
-      // Get total count for pagination metadata
+      const conditions: any[] = [];
+
+      if (search) {
+         conditions.push(
+            or(
+               ilike(movies.title, `%${search}%`),
+               ilike(movies.description, `%${search}%`),
+            ),
+         );
+      }
+
+      if (genre) {
+         conditions.push(sql`${genre} ILIKE ANY(${movies.genre})`);
+      }
+
+      if (year) {
+         conditions.push(
+            eq(sql`EXTRACT(YEAR FROM ${movies.releaseDate})`, year),
+         );
+      }
+
+      if (rating) {
+         conditions.push(gte(movies.rating, rating));
+      }
+
       const [totalCount] = await this.db
          .select({ count: count() })
          .from(movies);
 
-      // Get movies with pagination and ordering
       const moviesList = await this.db.query.movies.findMany({
+         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+         where: conditions.length ? and(...conditions) : undefined,
          limit: pageSize,
          offset,
          orderBy: [desc(movies.createdAt)],

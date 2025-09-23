@@ -15,10 +15,27 @@ const MoviesPage = async ({
    const pageSize = params.pageSize
       ? parseInt(params.pageSize as string, 10)
       : 9;
+   const year = params.year;
+   const rating = params.rating;
+   const genre = params.genre;
+   const search = params.search;
 
-   const response = await fetchWithoutAuth(
-      `/movies?page=${page}&pageSize=${pageSize}`,
-   );
+   let url = `/movies?page=${page}&pageSize=${pageSize}`;
+
+   if (search) {
+      url += `&search=${encodeURIComponent(search as string)}`;
+   }
+   if (year) {
+      url += `&year=${encodeURIComponent(year as string)}`;
+   }
+   if (rating) {
+      url += `&rating=${encodeURIComponent(rating as string)}`;
+   }
+   if (genre) {
+      url += `&genre=${encodeURIComponent(genre as string)}`;
+   }
+
+   const response = await fetchWithoutAuth(url);
    if (!response.ok) {
       throw new Error('Failed to fetch movies');
    }

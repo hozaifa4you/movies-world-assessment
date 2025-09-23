@@ -38,8 +38,14 @@ export class MovieController {
    }
 
    @Get()
-   findAll(@Query(new PaginationPipe()) pagination: PaginationQuery) {
-      return this.movieService.findAll(pagination);
+   findAll(
+      @Query(new PaginationPipe()) pagination: PaginationQuery,
+      @Query('search') search?: string,
+      @Query('genre') genre?: string,
+      @Query('year') year?: string,
+      @Query('rating') rating?: string,
+   ) {
+      return this.movieService.findAll(pagination, search, genre, year, rating);
    }
 
    @Get(':id')
