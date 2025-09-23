@@ -7,7 +7,6 @@ import { UserNav } from './user-nav';
 
 const items = [
    { id: 1, name: 'Movies', href: '/movies' },
-   { id: 2, name: 'Tv Shows', href: '/tv-shows' },
    { id: 3, name: 'Watch-list', href: '/watch-list' },
 ];
 
@@ -20,7 +19,7 @@ const Navbar = async () => {
             {/* Logo */}
             <Logo />
 
-            <div className="flex-1">
+            <div className="hidden flex-1 lg:block">
                <Search />
             </div>
 

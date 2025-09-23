@@ -1,5 +1,8 @@
+'use client';
 import { Edit2, PlayIcon, StarIcon, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export interface MovieCardProps {
    id: number;
@@ -22,6 +25,8 @@ const MovieCard = ({
    title,
    trailerUrl,
 }: MovieCardProps) => {
+   const pathname = usePathname();
+
    return (
       <div className="transform overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl transition-all duration-500 hover:scale-[1.02] lg:rounded-3xl">
          <div className="relative">
@@ -51,8 +56,8 @@ const MovieCard = ({
                      </div>
                   </div>
 
-                  <h3 className="mb-2 text-xl font-bold text-white lg:text-2xl">
-                     {title}
+                  <h3 className="hover:text-secondary mb-2 text-xl font-bold text-white transition-colors duration-200 ease-in lg:text-2xl">
+                     <Link href={`/movies/${id}`}>{title}</Link>
                   </h3>
 
                   <p className="mb-4 line-clamp-2 text-sm text-gray-300">
@@ -71,23 +76,38 @@ const MovieCard = ({
                      </Button>
                   )}
 
-                  <Button
-                     className="group font-semibold text-white transition-all"
-                     size="sm"
-                     variant="outline"
-                  >
-                     <Edit2 className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                     Edit
-                  </Button>
+                  {pathname === '/movies' ? (
+                     <>
+                        <Button
+                           className="group font-semibold text-white transition-all"
+                           size="sm"
+                           variant="outline"
+                        >
+                           <StarIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           Rate
+                        </Button>
+                     </>
+                  ) : (
+                     <>
+                        <Button
+                           className="group font-semibold text-white transition-all"
+                           size="sm"
+                           variant="outline"
+                        >
+                           <Edit2 className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           Edit
+                        </Button>
 
-                  <Button
-                     className="group font-semibold text-white transition-all"
-                     size="sm"
-                     variant="destructive"
-                  >
-                     <Trash2 className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                     Delete
-                  </Button>
+                        <Button
+                           className="group font-semibold text-white transition-all"
+                           size="sm"
+                           variant="destructive"
+                        >
+                           <Trash2 className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           Delete
+                        </Button>
+                     </>
+                  )}
                </div>
             </div>
          </div>

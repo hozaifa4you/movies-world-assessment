@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Search, Filter, Plus, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 
 type FilterKey = 'search' | 'genre' | 'year' | 'rating';
@@ -20,6 +20,7 @@ const MoveHeader = () => {
    const searchParams = useSearchParams();
    const params = new URLSearchParams(searchParams.toString());
    const route = useRouter();
+   const pathname = usePathname();
 
    const year = params.get('year');
    const rating = params.get('rating');
@@ -61,16 +62,20 @@ const MoveHeader = () => {
             <div className="space-y-1">
                <h1 className="text-3xl font-bold tracking-tight">Movies</h1>
                <p className="text-muted-foreground">
-                  Manage your movie collection ({10} movies)
+                  {pathname === '/movies'
+                     ? 'Browse and explore all movies'
+                     : 'Manage movies in the database'}
                </p>
             </div>
-            <Link
-               href="/control-panel/movies/new"
-               className={buttonVariants({})}
-            >
-               <Plus />
-               Add Movie
-            </Link>
+            {pathname !== '/movies' && (
+               <Link
+                  href="/control-panel/movies/new"
+                  className={buttonVariants({})}
+               >
+                  <Plus />
+                  Add Movie
+               </Link>
+            )}
          </div>
 
          {/* Search and Filters */}
