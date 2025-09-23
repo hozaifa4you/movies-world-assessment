@@ -16,12 +16,13 @@ import { RolesGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleEnum } from 'src/database/schemas';
 
-@Controller('uploads')
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(RoleEnum.Admin)
+@Controller('uploads')
 export class UploadController {
    constructor(private readonly uploadService: UploadService) {}
 
+   @Post('poster')
    @UseInterceptors(
       FileInterceptor('poster', {
          fileFilter(req, file, callback) {
@@ -31,9 +32,10 @@ export class UploadController {
                   false,
                );
             }
+            callback(null, true);
          },
          storage: diskStorage({
-            destination: (file, req, callback) => {
+            destination: (req, file, callback) => {
                const uploadpath = './public/uploads/temp';
 
                if (!fs.existsSync(uploadpath)) {
@@ -55,10 +57,11 @@ export class UploadController {
          }),
       }),
    )
-   @Post('poster')
-   uploadPoster(@UploadedFile() poster?: Express.Multer.File) {
-      console.log(poster);
+   async uploadPoster(@UploadedFile() poster?: Express.Multer.File) {
+      if (!poster) {
+         throw new NotFoundException('No file uploaded');
+      }
 
-      return { success: true };
+      return this.uploadService.uploadPoster(poster);
    }
 }
