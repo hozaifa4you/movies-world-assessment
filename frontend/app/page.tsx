@@ -7,6 +7,7 @@ import { RecentSection } from '@/components/home/recent-section';
 import { SelectedMovieSection } from '@/components/home/selected-movie-section';
 import { WatchListSection } from '@/components/home/watch-list-section';
 import { getSession } from '@/lib/sessions';
+import { Role } from '@/types/session';
 
 const HomePage = async () => {
    const session = await getSession();
@@ -19,7 +20,7 @@ const HomePage = async () => {
          <SelectedMovieSection />
          <RatingSection />
          <WatchListSection />
-         <MyMoviesSection />
+         {session && session.user.role === Role.ADMIN && <MyMoviesSection />}
          <Footer />
       </main>
    );

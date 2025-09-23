@@ -9,6 +9,9 @@ import { AppService } from './app.service';
 import { JwtGuard } from './auth/guards/auth.guard';
 import { AuthUser } from './auth/decorators/auth-user.decorator';
 import type { AuthUserType } from './types/auth';
+import { RolesGuard } from './auth/guards/role.guard';
+import { Roles } from './auth/decorators/roles.decorator';
+import { RoleEnum } from './database/schemas';
 
 @Controller()
 export class AppController {
@@ -38,5 +41,13 @@ export class AppController {
    @Get('my-watchlist')
    async getMyWatchList(@AuthUser() user: AuthUserType) {
       return this.appService.getMyWatchList(user.id);
+   }
+
+   @HttpCode(HttpStatus.OK)
+   @UseGuards(JwtGuard, RolesGuard)
+   @Roles(RoleEnum.Admin)
+   @Get('my-added')
+   async getMyAddedList(@AuthUser() user: AuthUserType) {
+      return this.appService.getMyAddedList(user.id);
    }
 }

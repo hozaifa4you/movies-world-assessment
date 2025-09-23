@@ -95,4 +95,15 @@ export class AppService {
 
       return result;
    }
+
+   public async getMyAddedList(userId: number) {
+      const list = await this.db.query.movies.findMany({
+         where: eq(movies.userId, userId),
+         columns: { id: true, title: true, posterUrl: true },
+         orderBy: desc(movies.createdAt),
+         limit: 2,
+      });
+
+      return list;
+   }
 }
