@@ -84,7 +84,6 @@ export function SearchActor({ actors, setActors }: SearchActorProps) {
                setSearchResults([]);
             }
          } catch (error) {
-            console.error('Search error:', error);
             setSearchResults([]);
          } finally {
             setIsLoading(false);

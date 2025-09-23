@@ -52,7 +52,6 @@ export async function getSession() {
 
       return payload as Session;
    } catch (err) {
-      console.error('Failed to verify the session', err);
       await deleteSession();
       return null;
    }
@@ -81,7 +80,6 @@ export async function updateTokens({ accessToken }: { accessToken: string }) {
       await createSession(newPayload);
       return newPayload;
    } catch (err) {
-      console.error('Failed to update tokens', err);
       await deleteSession();
       return null;
    }

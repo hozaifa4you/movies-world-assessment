@@ -88,7 +88,6 @@ const CreateMovePage = () => {
          }
 
          const data = await response.json();
-         console.log(data);
 
          setPosterPreview(data);
          if (posterRef.current) {

@@ -32,8 +32,6 @@ const actorActions = async (initialState: unknown, formData: FormData) => {
       called: parsedData.called?.split(',').map((s) => s.trim()) || [],
    };
 
-   console.log(dataToSend);
-
    const response = await fetchWithAuth('/actors', {
       method: 'POST',
       body: JSON.stringify(dataToSend),

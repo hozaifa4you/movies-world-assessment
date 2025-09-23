@@ -15,7 +15,6 @@ export function useAuth() {
                setSession(sessionData);
             }
          } catch (error) {
-            console.error('Failed to fetch session:', error);
          } finally {
             setLoading(false);
          }

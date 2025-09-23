@@ -31,8 +31,6 @@ const MovieCard = ({
 }: MovieCardProps) => {
    const pathname = usePathname();
 
-   console.log({ userRating });
-
    return (
       <div className="transform overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl transition-all duration-500 hover:scale-[1.02] lg:rounded-3xl">
          <div className="relative">

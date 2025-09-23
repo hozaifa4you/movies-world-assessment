@@ -36,8 +36,6 @@ export const createMovie = async (
          : undefined,
    };
 
-   console.log(data);
-
    const {
       success,
       data: parsedData,
