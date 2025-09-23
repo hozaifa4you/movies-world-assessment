@@ -8,59 +8,40 @@ import {
 import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 
-const HeroCarousel = () => {
+interface HeroCarouselProps {
+   id: number;
+   title: string;
+   posterUrl: string | null;
+   releaseDate: string | null;
+   status: string;
+   rating: number | null;
+   shortDescription: string | null;
+   genre: string[];
+}
+
+const HeroCarousel = ({ movies }: { movies: HeroCarouselProps[] }) => {
    const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-   const featuredMovies = [
-      {
-         image: '/sci-fi-action-movie-poster-with-futuristic-soldier.jpg',
-         title: 'Quantum Soldier',
-         genre: 'Sci-Fi Action',
-         rating: 8.7,
-         year: '2024',
-         description:
-            'A futuristic warrior battles through time to save humanity from extinction.',
-      },
-      {
-         image: '/horror-comedy-movie-poster-with-zombie-theme.jpg',
-         title: 'Zombie Comedy',
-         genre: 'Horror Comedy',
-         rating: 7.9,
-         year: '2024',
-         description:
-            'Hilarious undead adventure that will make you laugh and scream.',
-      },
-      {
-         image: '/action-thriller-movie-poster-with-urban-setting.jpg',
-         title: 'Urban Strike',
-         genre: 'Action Thriller',
-         rating: 8.2,
-         year: '2024',
-         description:
-            'High-octane urban warfare with non-stop action sequences.',
-      },
-   ];
 
    useEffect(() => {
       if (!isAutoPlaying) return;
 
       const interval = setInterval(() => {
-         setCurrentMovieIndex((prev) => (prev + 1) % featuredMovies.length);
+         setCurrentMovieIndex((prev) => (prev + 1) % movies.length);
       }, 5000);
 
       return () => clearInterval(interval);
-   }, [isAutoPlaying, featuredMovies.length]);
+   }, [isAutoPlaying, movies.length]);
 
    const nextMovie = () => {
       setIsAutoPlaying(false);
-      setCurrentMovieIndex((prev) => (prev + 1) % featuredMovies.length);
+      setCurrentMovieIndex((prev) => (prev + 1) % movies.length);
    };
 
    const prevMovie = () => {
       setIsAutoPlaying(false);
       setCurrentMovieIndex(
-         (prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length,
+         (prev) => (prev - 1 + movies.length) % movies.length,
       );
    };
 
@@ -96,10 +77,10 @@ const HeroCarousel = () => {
                <div className="relative">
                   <img
                      src={
-                        featuredMovies[currentMovieIndex].image ||
+                        movies[currentMovieIndex].posterUrl ||
                         '/placeholder.svg'
                      }
-                     alt={featuredMovies[currentMovieIndex].title}
+                     alt={movies[currentMovieIndex].title}
                      className="h-96 w-72 object-cover sm:h-[450px] sm:w-80 md:h-[540px] md:w-96"
                   />
 
@@ -109,35 +90,35 @@ const HeroCarousel = () => {
                      <div className="mb-3">
                         <div className="mb-2 flex items-center gap-2">
                            <span className="text-sm font-semibold text-yellow-400">
-                              {featuredMovies[currentMovieIndex].year}
+                              {movies[currentMovieIndex].releaseDate}
                            </span>
                            <span className="text-sm text-gray-400">•</span>
                            <span className="text-sm text-gray-300">
-                              {featuredMovies[currentMovieIndex].genre}
+                              {movies[currentMovieIndex].genre}
                            </span>
                            <div className="ml-auto flex items-center gap-1">
                               <StarIcon className="h-4 w-4 fill-current text-yellow-400" />
                               <span className="text-sm font-semibold text-white">
-                                 {featuredMovies[currentMovieIndex].rating}
+                                 {movies[currentMovieIndex].rating ?? 0}/10
                               </span>
                            </div>
                         </div>
 
                         <h3 className="mb-2 text-xl font-bold text-white lg:text-2xl">
-                           {featuredMovies[currentMovieIndex].title}
+                           {movies[currentMovieIndex].title}
                         </h3>
 
                         <p className="mb-4 line-clamp-2 text-sm text-gray-300">
-                           {featuredMovies[currentMovieIndex].description}
+                           {movies[currentMovieIndex].shortDescription ?? ''}
                         </p>
                      </div>
 
                      <Button
-                        className="group w-full font-semibold text-white transition-all"
+                        className="group w-full font-semibold text-white uppercase transition-all"
                         size="lg"
                      >
                         <PlayIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                        WATCH NOW
+                        Triller
                      </Button>
                   </div>
                </div>
@@ -145,7 +126,7 @@ const HeroCarousel = () => {
 
             {/* Slide Indicators */}
             <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 transform gap-2">
-               {featuredMovies.map((_, index) => (
+               {movies.map((_, index) => (
                   <button
                      key={index}
                      onClick={() => goToMovie(index)}

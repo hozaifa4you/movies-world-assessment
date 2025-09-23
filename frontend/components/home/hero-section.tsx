@@ -1,6 +1,14 @@
+import { fetchWithAuth } from '@/lib/authFetch';
 import { HeroCarousel } from './hero-carousel';
 
-const HeroSection = () => {
+const HeroSection = async () => {
+   const res = await fetchWithAuth('/hero-content');
+   const data = await res.json();
+
+   if (!res.ok) {
+      return 'Failed to load hero content';
+   }
+
    return (
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
          <div className="absolute inset-0">
@@ -54,7 +62,7 @@ const HeroSection = () => {
                   </div>
                </div>
 
-               <HeroCarousel />
+               <HeroCarousel movies={data} />
             </div>
          </div>
       </section>
