@@ -1,7 +1,5 @@
 'use client';
-
 import { IconCirclePlusFilled, IconMail, type Icon } from '@tabler/icons-react';
-
 import { Button } from '@/components/ui/button';
 import {
    SidebarGroup,
@@ -11,16 +9,20 @@ import {
    SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
-export function NavMain({
-   items,
-}: {
+interface NavMainProps {
    items: {
       title: string;
       url: string;
       icon?: Icon;
    }[];
-}) {
+}
+
+export function NavMain({ items }: NavMainProps) {
+   const pathname = usePathname();
+
    return (
       <SidebarGroup>
          <SidebarGroupContent className="flex flex-col gap-2">
@@ -46,7 +48,15 @@ export function NavMain({
             <SidebarMenu>
                {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                     <SidebarMenuButton tooltip={item.title} asChild>
+                     <SidebarMenuButton
+                        className={cn({
+                           'bg-primary/10 text-primary': pathname.startsWith(
+                              item.url,
+                           ),
+                        })}
+                        tooltip={item.title}
+                        asChild
+                     >
                         <Link href={item.url}>
                            <>
                               {item.icon && <item.icon />}
