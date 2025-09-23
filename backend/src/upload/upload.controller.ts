@@ -1,6 +1,8 @@
 import {
    Controller,
+   Delete,
    NotFoundException,
+   Param,
    Post,
    UploadedFile,
    UseGuards,
@@ -63,5 +65,10 @@ export class UploadController {
       }
 
       return this.uploadService.uploadPoster(poster);
+   }
+
+   @Delete(':filename')
+   public async removePoster(@Param('filename') filename: string) {
+      return this.uploadService.removePoster(filename);
    }
 }

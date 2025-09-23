@@ -1,9 +1,10 @@
 import { Storage } from '@google-cloud/storage';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { type ConfigType } from '@nestjs/config';
 import path from 'path';
 import storageConfig from 'src/config/storage.config';
 import fs from 'fs';
+import { log } from 'console';
 
 @Injectable()
 export class UploadService {
@@ -29,6 +30,18 @@ export class UploadService {
 
       const url = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
 
-      return { url };
+      return { url, filename: poster.filename };
+   }
+
+   public async removePoster(filename: string) {
+      const bucket = this.storage.bucket(this.config.gcpBucket!);
+      const file = bucket.file(`posters/${filename}`);
+
+      try {
+         await file.delete({ ignoreNotFound: true });
+      } catch (error) {
+         log(error);
+         throw new BadRequestException("Couldn't delete the file");
+      }
    }
 }
