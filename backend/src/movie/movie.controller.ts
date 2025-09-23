@@ -22,6 +22,7 @@ import {
    PaginationPipe,
    type PaginationQuery,
 } from 'src/common/pipes/pagination.pipe';
+import { OptionalAuth } from 'src/auth/decorators/optional-auth.decorator';
 
 @Controller('movies')
 export class MovieController {
@@ -44,8 +45,16 @@ export class MovieController {
       @Query('genre') genre?: string,
       @Query('year') year?: string,
       @Query('rating') rating?: string,
+      @OptionalAuth() userId?: number | null,
    ) {
-      return this.movieService.findAll(pagination, search, genre, year, rating);
+      return this.movieService.findAll(
+         pagination,
+         search,
+         genre,
+         year,
+         rating,
+         userId ?? undefined,
+      );
    }
 
    @Get(':id')

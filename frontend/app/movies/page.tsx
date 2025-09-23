@@ -1,6 +1,6 @@
 import { MovieCard, MovieCardProps } from '@/components/admin-only/move-card';
 import { MoveHeader } from '@/components/admin-only/movie-header';
-import { fetchWithoutAuth } from '@/lib/authFetch';
+import { fetchWithAuth, fetchWithoutAuth } from '@/lib/authFetch';
 import { PaginationInfo } from '@/types/common';
 import { Pagination } from '@/components/ui/pagination';
 
@@ -35,7 +35,7 @@ const MoviesPage = async ({
       url += `&genre=${encodeURIComponent(genre as string)}`;
    }
 
-   const response = await fetchWithoutAuth(url);
+   const response = await fetchWithAuth(url);
    if (!response.ok) {
       throw new Error('Failed to fetch movies');
    }

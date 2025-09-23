@@ -7,10 +7,11 @@ import {
    actors,
    movies,
    moviesActors,
+   ratings,
    type NewMovie,
    type NewMoviesActors,
 } from 'src/database/schemas';
-import { eq, desc, count, ilike, and, gte, lte, sql, or } from 'drizzle-orm';
+import { eq, desc, count, ilike, and, gte, sql, or } from 'drizzle-orm';
 import { PaginationQuery } from 'src/common/pipes/pagination.pipe';
 
 @Injectable()
@@ -84,6 +85,7 @@ export class MovieService {
       genre?: string,
       year?: string,
       rating?: string,
+      userId?: number,
    ) {
       const { page, pageSize } = pagination;
       const offset = (page - 1) * pageSize;
@@ -115,7 +117,9 @@ export class MovieService {
 
       const [totalCount] = await this.db
          .select({ count: count() })
-         .from(movies);
+         .from(movies)
+         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+         .where(conditions.length ? and(...conditions) : undefined);
 
       const moviesList = await this.db.query.movies.findMany({
          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -134,6 +138,35 @@ export class MovieService {
             trailerUrl: true,
          },
       });
+
+      if (userId) {
+         const _result = moviesList.map(async (movie) => {
+            const qry = await this.db.query.ratings.findFirst({
+               where: and(
+                  eq(ratings.movieId, movie.id),
+                  eq(ratings.userId, userId),
+               ),
+            });
+
+            return { ...movie, userRating: qry ? true : false };
+         });
+
+         const moviesListWithUserRating = await Promise.all(_result);
+
+         const totalPages = Math.ceil(totalCount.count / pageSize);
+
+         return {
+            data: moviesListWithUserRating,
+            pagination: {
+               page,
+               limit: pageSize,
+               total: totalCount.count,
+               totalPages,
+               hasNext: page < totalPages,
+               hasPrev: page > 1,
+            },
+         };
+      }
 
       const totalPages = Math.ceil(totalCount.count / pageSize);
 

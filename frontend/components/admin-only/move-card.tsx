@@ -3,6 +3,8 @@ import { Edit2, PlayIcon, StarIcon, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { IconStarFilled } from '@tabler/icons-react';
+import { cn } from '@/lib/utils';
 
 export interface MovieCardProps {
    id: number;
@@ -13,6 +15,7 @@ export interface MovieCardProps {
    releaseDate: string | null;
    rating: number | null;
    trailerUrl: string | null;
+   userRating?: boolean;
 }
 
 const MovieCard = ({
@@ -24,8 +27,11 @@ const MovieCard = ({
    shortDescription,
    title,
    trailerUrl,
+   userRating,
 }: MovieCardProps) => {
    const pathname = usePathname();
+
+   console.log({ userRating });
 
    return (
       <div className="transform overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl transition-all duration-500 hover:scale-[1.02] lg:rounded-3xl">
@@ -56,7 +62,7 @@ const MovieCard = ({
                      </div>
                   </div>
 
-                  <h3 className="hover:text-secondary mb-2 text-xl font-bold text-white transition-colors duration-200 ease-in lg:text-2xl">
+                  <h3 className="hover:text-secondary mb-2 text-xl font-bold text-white transition-all duration-200 ease-in hover:underline lg:text-2xl">
                      <Link href={`/movies/${id}`}>{title}</Link>
                   </h3>
 
@@ -79,11 +85,19 @@ const MovieCard = ({
                   {pathname === '/movies' ? (
                      <>
                         <Button
-                           className="group font-semibold text-white transition-all"
+                           disabled={userRating}
+                           className={cn(
+                              'group font-semibold text-white transition-all',
+                              { 'text-secondary': userRating },
+                           )}
                            size="sm"
                            variant="outline"
                         >
-                           <StarIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           {userRating ? (
+                              <IconStarFilled className="text-secondary mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           ) : (
+                              <StarIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
+                           )}
                            Rate
                         </Button>
                      </>
