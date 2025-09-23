@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import { Logo } from './logo';
 import { Search } from './search';
-import { User } from 'lucide-react';
+import { getSession } from '@/lib/sessions';
+import { UserNav } from './user-nav';
 
 const items = [
    { id: 1, name: 'Movies', href: '/movies' },
@@ -10,7 +11,9 @@ const items = [
    { id: 3, name: 'Watch-list', href: '/watch-list' },
 ];
 
-const Navbar = () => {
+const Navbar = async () => {
+   const session = await getSession();
+
    return (
       <nav className="sticky top-0 z-50 w-full bg-gradient-to-b from-black to-gray-900 px-6 py-4 shadow-md backdrop-blur-md">
          <div className="container flex items-center justify-between lg:gap-10">
@@ -39,9 +42,16 @@ const Navbar = () => {
                   ))}
                </menu>
 
-               <Button className="" size="icon" variant="ghost">
-                  <User />
-               </Button>
+               {session && session.user ? (
+                  <UserNav session={session} />
+               ) : (
+                  <Link
+                     className={buttonVariants({ size: 'sm' })}
+                     href="/signup"
+                  >
+                     Sign Up
+                  </Link>
+               )}
             </div>
          </div>
       </nav>
