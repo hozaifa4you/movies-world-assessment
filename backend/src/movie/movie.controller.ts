@@ -8,6 +8,7 @@ import {
    Delete,
    UseGuards,
    Query,
+   ParseIntPipe,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -23,6 +24,7 @@ import {
    type PaginationQuery,
 } from 'src/common/pipes/pagination.pipe';
 import { OptionalAuth } from 'src/auth/decorators/optional-auth.decorator';
+import { RateMovieDto } from './dto/rate-movie.dto';
 
 @Controller('movies')
 export class MovieController {
@@ -31,7 +33,7 @@ export class MovieController {
    @UseGuards(JwtGuard, RolesGuard)
    @Roles(RoleEnum.Admin)
    @Post()
-   create(
+   public async create(
       @Body() createMovieDto: CreateMovieDto,
       @AuthUser() user: AuthUserType,
    ) {
@@ -63,12 +65,26 @@ export class MovieController {
    }
 
    @Patch(':id')
-   update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
+   public update(
+      @Param('id') id: string,
+      @Body() updateMovieDto: UpdateMovieDto,
+   ) {
       return this.movieService.update(+id, updateMovieDto);
    }
 
    @Delete(':id')
    remove(@Param('id') id: string) {
       return this.movieService.remove(+id);
+   }
+
+   @Patch(':id/rating')
+   @UseGuards(JwtGuard, RolesGuard)
+   @Roles(RoleEnum.User)
+   public async rateNow(
+      @Param('id', ParseIntPipe) id: number,
+      @Body() ratingMovieDto: RateMovieDto,
+      @AuthUser() user: AuthUserType,
+   ) {
+      return this.movieService.rateNow(id, user.id, ratingMovieDto);
    }
 }

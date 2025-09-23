@@ -13,6 +13,7 @@ import {
 } from 'src/database/schemas';
 import { eq, desc, count, ilike, and, gte, sql, or } from 'drizzle-orm';
 import { PaginationQuery } from 'src/common/pipes/pagination.pipe';
+import { RateMovieDto } from './dto/rate-movie.dto';
 
 @Injectable()
 export class MovieService {
@@ -193,5 +194,46 @@ export class MovieService {
 
    remove(id: number) {
       return `This action removes a #${id} movie`;
+   }
+
+   public async rateNow(
+      id: number,
+      userId: number,
+      ratingMovieDto: RateMovieDto,
+   ) {
+      const existingRating = await this.db.query.ratings.findFirst({
+         where: and(eq(ratings.movieId, id), eq(ratings.userId, userId)),
+      });
+
+      if (existingRating) {
+         throw new BadRequestException('You have already rated this movie.');
+      }
+
+      const returning = await this.db
+         .insert(ratings)
+         .values({
+            movieId: id,
+            userId,
+            rating: ratingMovieDto.rating,
+            review: ratingMovieDto.review || null,
+         })
+         .returning();
+
+      const result = await this.db
+         .select({ avg: sql<number>`AVG(${ratings.rating})` })
+         .from(ratings)
+         .where(eq(ratings.movieId, id));
+
+      const avgRatingRaw = result[0]?.avg ?? 0;
+      const avgRating = Number(avgRatingRaw);
+
+      await this.db
+         .update(movies)
+         .set({
+            rating: avgRating.toFixed(1),
+         })
+         .where(eq(movies.id, id));
+
+      return returning[0];
    }
 }
