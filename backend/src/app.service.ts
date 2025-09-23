@@ -55,10 +55,9 @@ export class AppService {
          .select({
             id: movies.id,
             title: movies.title,
-            rating: ratings.rating,
+            rating: movies.rating,
             posterUrl: movies.posterUrl,
             trailerUrl: movies.trailerUrl,
-            ratings,
          })
          .from(movies)
          .leftJoin(ratings, eq(ratings.movieId, movies.id))
