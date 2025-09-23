@@ -5,8 +5,22 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1758452263128,
-      "tag": "0000_create_users_table",
+      "when": 1758548508979,
+      "tag": "0000_generate_new_migration_after_removed",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1758630649324,
+      "tag": "0001_create_watchlists_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758633869852,
+      "tag": "0002_create_ratings_table",
       "breakpoints": true
     }
   ]

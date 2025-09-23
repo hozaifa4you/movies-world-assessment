@@ -24,5 +24,6 @@ export const DB = Symbol('db-connection');
          },
       },
    ],
+   exports: [DB],
 })
 export class DatabaseModule {}
