@@ -25,6 +25,7 @@ import { SearchActor } from '@/components/admin-only/search-actor';
 import { createMovie } from '@/actions/movie.action';
 import Form from 'next/form';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export interface ActorType {
    name: string;
@@ -46,7 +47,7 @@ const CreateMovePage = () => {
    const genreRef = useRef<HTMLInputElement | null>(null);
    const releaseDateRef = useRef<HTMLInputElement | null>(null);
    const [state, action, pending] = useActionState(createMovie, null);
-   const [] = useState();
+   const router = useRouter();
 
    const setActorsWithRef = (actor: ActorType) => {
       setActors((prev) => [...prev, actor]);
@@ -114,6 +115,7 @@ const CreateMovePage = () => {
          toast.success('Create Done', {
             description: 'Movie has been created successfully.',
          });
+         router.push('/control-panel/movies');
       }
    }, [state?.error, state?.success]);
 

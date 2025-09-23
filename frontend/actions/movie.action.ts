@@ -19,6 +19,7 @@ export const createMovie = async (
       shortDescription: formData.get('shortDescription'),
       description: formData.get('description'),
       imdbId: formData.get('imdbId'),
+      imdbRating: formData.get('imdbRating'),
       budget: formData.get('budget'),
       revenue: formData.get('revenue'),
       genre: formData.get('genre')
