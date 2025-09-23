@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ActorModule } from './actor/actor.module';
 import { MovieModule } from './movie/movie.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
    imports: [
@@ -21,6 +22,7 @@ import { MovieModule } from './movie/movie.module';
       UserModule,
       ActorModule,
       MovieModule,
+      UploadModule,
    ],
    controllers: [AppController],
    providers: [AppService],
