@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
    integer,
    pgTable,
@@ -6,6 +7,8 @@ import {
    timestamp,
    index,
 } from 'drizzle-orm/pg-core';
+import { watchList } from './watchlists.schema';
+import { movies } from './movies.schema';
 
 const role_enum = pgEnum('role_enum', ['super_admin', 'admin', 'user']);
 const status_enum = pgEnum('status_enum', ['active', 'inactive', 'banned']);
@@ -32,6 +35,21 @@ export const users = pgTable(
       index('idx_users_created_at').on(table.createdAt),
    ],
 );
+
+export const usersRelations = relations(users, ({ many }) => ({
+   watchlist: many(watchList),
+}));
+
+export const watchlistRelations = relations(watchList, ({ one }) => ({
+   user: one(users, {
+      fields: [watchList.userId],
+      references: [users.id],
+   }),
+   movie: one(movies, {
+      fields: [watchList.movieId],
+      references: [movies.id],
+   }),
+}));
 
 export type Role = (typeof users.$inferSelect)['role'];
 export type Status = (typeof users.$inferSelect)['status'];
