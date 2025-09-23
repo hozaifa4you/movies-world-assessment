@@ -10,6 +10,8 @@ import {
    index,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
+import { relations } from 'drizzle-orm';
+import { ratings } from './ratings.schema';
 
 const status_enum = pgEnum('movie_status_enum', [
    'archived',
@@ -63,6 +65,10 @@ export const movies = pgTable(
       index('idx_movies_imdb_rating').on(table.imdbRating),
    ],
 );
+
+export const moviesRelations_ratings = relations(movies, ({ many }) => ({
+   ratings: many(ratings),
+}));
 
 export type Movie = typeof movies.$inferSelect;
 export type NewMovie = typeof movies.$inferInsert;

@@ -14,4 +14,7 @@ export class AppController {
    public async getRecentMovies() {
       return this.appService.getRecentMovies();
    }
+
+   @Get('my-ratings')
+   async getMyRatings() {}
 }

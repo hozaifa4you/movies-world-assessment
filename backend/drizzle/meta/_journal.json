@@ -15,6 +15,13 @@
       "when": 1758630649324,
       "tag": "0001_create_watchlists_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758633869852,
+      "tag": "0002_create_ratings_table",
+      "breakpoints": true
     }
   ]
 }

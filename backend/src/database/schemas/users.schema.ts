@@ -9,6 +9,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { watchList } from './watchlists.schema';
 import { movies } from './movies.schema';
+import { ratings } from './ratings.schema';
 
 const role_enum = pgEnum('role_enum', ['super_admin', 'admin', 'user']);
 const status_enum = pgEnum('status_enum', ['active', 'inactive', 'banned']);
@@ -49,6 +50,10 @@ export const watchlistRelations = relations(watchList, ({ one }) => ({
       fields: [watchList.movieId],
       references: [movies.id],
    }),
+}));
+
+export const usersRelations_ratings = relations(users, ({ many }) => ({
+   ratings: many(ratings),
 }));
 
 export type Role = (typeof users.$inferSelect)['role'];
