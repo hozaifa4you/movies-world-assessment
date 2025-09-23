@@ -25,39 +25,14 @@ import { Logo2 } from './logo-dashboard';
 const data = {
    navMain: [
       {
-         title: 'Analytics',
-         url: '/control-panel/analytics',
-         icon: IconDashboard,
-      },
-      {
          title: 'Movies',
          url: '/control-panel/movies',
          icon: IconMovie,
       },
       {
-         title: 'Tv Shows',
-         url: '/control-panel/tv-shows',
-         icon: IconDeviceTv,
-      },
-      {
          title: 'Actors',
          url: '/control-panel/actors',
          icon: IconUserScan,
-      },
-      {
-         title: 'Users',
-         url: '/control-panel/users',
-         icon: IconUsers,
-      },
-      {
-         title: 'Payments',
-         url: '/control-panel/payments',
-         icon: IconCurrencyDollar,
-      },
-      {
-         title: 'Subscriptions',
-         url: '/control-panel/subscriptions',
-         icon: IconAB2,
       },
    ],
 };

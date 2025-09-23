@@ -62,7 +62,7 @@ export async function middleware(request: NextRequest) {
 
    if (!hasRequiredRole(session.user.role, requiredRole)) {
       const redirectUrl =
-         session.user.role === Role.USER ? '/my-watchlist' : '/analytics';
+         session.user.role === Role.USER ? '/' : '/control-panel/movies';
       const unauthorizedUrl = new URL(redirectUrl, request.url);
       return NextResponse.redirect(unauthorizedUrl);
    }
