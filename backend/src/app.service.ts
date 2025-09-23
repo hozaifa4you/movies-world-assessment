@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Database } from './database/types';
 import { DB } from './database/database.module';
-import { and, desc, isNotNull, eq, or } from 'drizzle-orm';
-import { movies } from './database/schemas';
+import { and, desc, isNotNull, eq, or, count } from 'drizzle-orm';
+import { movies, ratings } from './database/schemas';
 
 @Injectable()
 export class AppService {
@@ -48,5 +48,35 @@ export class AppService {
       });
 
       return recentMovies;
+   }
+
+   public async getMyRatings(userId: number) {
+      const result = await this.db
+         .select({
+            id: movies.id,
+            title: movies.title,
+            rating: ratings.rating,
+            posterUrl: movies.posterUrl,
+            trailerUrl: movies.trailerUrl,
+            ratings,
+         })
+         .from(movies)
+         .leftJoin(ratings, eq(ratings.movieId, movies.id))
+         .where(eq(ratings.userId, userId))
+         .orderBy(desc(movies.createdAt))
+         .limit(10);
+
+      const _results = result.map(async (t) => {
+         const [countValue] = await this.db
+            .select({ count: count() })
+            .from(ratings)
+            .where(eq(ratings.movieId, t.id));
+
+         return { ...t, reviewCount: Number(countValue.count) };
+      });
+
+      const finalResults = await Promise.all(_results);
+
+      return finalResults;
    }
 }
