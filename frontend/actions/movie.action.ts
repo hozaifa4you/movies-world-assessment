@@ -28,7 +28,15 @@ export const createMovie = async (
       actors: formData.get('actors')
          ? JSON.parse(formData.get('actors') as string)
          : undefined,
+      posterUrl: formData.get('posterUrl')
+         ? formData.get('posterUrl')
+         : undefined,
+      trailerUrl: formData.get('trailerUrl')
+         ? formData.get('trailerUrl')
+         : undefined,
    };
+
+   console.log(data);
 
    const {
       success,

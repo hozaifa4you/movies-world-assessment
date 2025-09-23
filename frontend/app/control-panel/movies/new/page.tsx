@@ -38,7 +38,10 @@ export interface ActorType {
 }
 
 const CreateMovePage = () => {
-   const [posterPreview, setPosterPreview] = useState<string>('');
+   const [posterPreview, setPosterPreview] = useState({
+      url: '',
+      filename: '',
+   });
    const [newGenre, setNewGenre] = useState('');
    const [genre, setGenre] = useState<string[]>([]);
    const [releaseDate, setReleaseDate] = useState<Date>();
@@ -85,14 +88,39 @@ const CreateMovePage = () => {
          }
 
          const data = await response.json();
-         setPosterPreview(data.url);
+         console.log(data);
+
+         setPosterPreview(data);
          if (posterRef.current) {
             posterRef.current.value = data.url;
          }
       }
    };
 
-   const handlePosterRemove = (postUrl: string) => {};
+   const handlePosterRemove = async (filename: string) => {
+      const response = await fetch(
+         `${env.nextPublicApiUrl}/api/v1/uploads/poster/${filename}`,
+         {
+            method: 'DELETE',
+            headers: {
+               Authorization: `Bearer ${session?.access_token}`,
+               'Content-Type': 'application/json',
+            },
+         },
+      );
+
+      if (!response.ok) {
+         toast.error('Poster Remove', {
+            description: 'Failed to remove poster. Please try again.',
+         });
+         return;
+      }
+
+      setPosterPreview({ url: '', filename: '' });
+      if (posterRef.current) {
+         posterRef.current.value = '';
+      }
+   };
 
    const addGenre = (_genre: string) => {
       if (genre && !genre.includes(_genre)) {
@@ -160,10 +188,10 @@ const CreateMovePage = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                      <div className="flex flex-col items-center space-y-4">
-                        {posterPreview ? (
+                        {posterPreview.url ? (
                            <div className="relative">
                               <img
-                                 src={posterPreview}
+                                 src={posterPreview.url}
                                  alt="Poster preview"
                                  className="h-72 w-48 rounded-lg object-cover"
                               />
@@ -172,9 +200,9 @@ const CreateMovePage = () => {
                                  variant="destructive"
                                  size="sm"
                                  className="absolute top-2 right-2"
-                                 onClick={() => {
-                                    setPosterPreview('');
-                                 }}
+                                 onClick={() =>
+                                    handlePosterRemove(posterPreview.filename)
+                                 }
                               >
                                  <X className="h-4 w-4" />
                               </Button>
@@ -200,7 +228,7 @@ const CreateMovePage = () => {
 
                         <input
                            type="text"
-                           name="poster"
+                           name="posterUrl"
                            className="sr-only"
                            ref={posterRef}
                         />
@@ -316,10 +344,10 @@ const CreateMovePage = () => {
                               Status<small className="text-secondary">*</small>
                            </Label>
                            <Select name="status">
-                              <SelectTrigger>
+                              <SelectTrigger className="w-full">
                                  <SelectValue placeholder="Select status" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="w-full">
                                  {statusOptions.map((status) => (
                                     <SelectItem key={status} value={status}>
                                        {status.charAt(0).toUpperCase() +
@@ -372,6 +400,22 @@ const CreateMovePage = () => {
                               className="sr-only"
                               name="releaseDate"
                            />
+                        </div>
+
+                        <div className="space-y-2">
+                           <Label htmlFor="trailerUrl">Trailer URL</Label>
+                           <Input
+                              id="trailerUrl"
+                              type="url"
+                              name="trailerUrl"
+                              placeholder="e.g., https://www.youtube.com/watch?v=123456"
+                           />
+
+                           {state?.errors?.trailerUrl && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.trailerUrl}
+                              </p>
+                           )}
                         </div>
                      </div>
 

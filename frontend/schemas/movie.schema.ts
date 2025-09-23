@@ -29,5 +29,7 @@ export const movieSchema = z.object({
       )
       .optional(),
    imdbRating: z.string().optional(),
+   posterUrl: z.url().optional(),
+   trailerUrl: z.url().optional(),
 });
 export type MovieFormData = z.infer<typeof movieSchema>;

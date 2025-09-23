@@ -67,7 +67,7 @@ export class UploadController {
       return this.uploadService.uploadPoster(poster);
    }
 
-   @Delete(':filename')
+   @Delete('poster/:filename')
    public async removePoster(@Param('filename') filename: string) {
       return this.uploadService.removePoster(filename);
    }

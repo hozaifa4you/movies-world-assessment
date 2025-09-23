@@ -23,6 +23,8 @@ export class MovieService {
          revenue,
          imdbRating,
          genre,
+         posterUrl,
+         trailerUrl,
          ...movieData
       } = createMovieDto;
 
@@ -34,6 +36,8 @@ export class MovieService {
             revenue: revenue !== undefined ? revenue.toString() : null,
             imdbRating: imdbRating !== undefined ? imdbRating.toString() : null,
             userId,
+            posterUrl: posterUrl || null,
+            trailerUrl: trailerUrl || null,
          };
 
          const [newMovie] = await tx
