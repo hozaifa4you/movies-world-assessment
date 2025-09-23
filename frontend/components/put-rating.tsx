@@ -10,12 +10,14 @@ import {
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
+import { env } from '@/config/env';
 import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { IconStarFilled } from '@tabler/icons-react';
 import { StarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface PutRatingProps {
    movieId: number;
@@ -26,14 +28,43 @@ export function PutRating({ movieId, userRating }: PutRatingProps) {
    const session = useAuth();
    const router = useRouter();
    const [rating, setRating] = useState({ rating: 0, review: '' });
+   const [loading, setLoading] = useState(false);
 
-   function handleSubmit() {
-      if (session) {
+   async function handleSubmit() {
+      if (!session.isAuthenticated) {
          router.push('/signin');
+         return;
       }
-   }
 
-   console.log(rating);
+      if (!rating.rating) {
+         return toast.error('Please select a rating between 1 and 10.');
+      }
+
+      setLoading(true);
+      const res = await fetch(
+         `${env.nextPublicApiUrl}/api/v1/movies/${movieId}/rating`,
+         {
+            method: 'PATCH',
+            headers: {
+               'Content-Type': 'application/json',
+               Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify(rating),
+         },
+      );
+
+      if (!res.ok) {
+         const error = await res.json();
+         setLoading(false);
+         toast.error('Rating', {
+            description: error.message,
+         });
+         return;
+      }
+
+      setLoading(false);
+      router.refresh();
+   }
 
    return (
       <Dialog>
@@ -117,6 +148,7 @@ export function PutRating({ movieId, userRating }: PutRatingProps) {
                      onClick={handleSubmit}
                      type="button"
                      className="w-full"
+                     isLoading={loading}
                   >
                      Send feedback
                   </Button>
