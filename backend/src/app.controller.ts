@@ -32,4 +32,11 @@ export class AppController {
    async getMyRatings(@AuthUser() user: AuthUserType) {
       return this.appService.getMyRatings(user.id);
    }
+
+   @HttpCode(HttpStatus.OK)
+   @UseGuards(JwtGuard)
+   @Get('my-watchlist')
+   async getMyWatchList(@AuthUser() user: AuthUserType) {
+      return this.appService.getMyWatchList(user.id);
+   }
 }

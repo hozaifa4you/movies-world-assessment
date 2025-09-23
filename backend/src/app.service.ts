@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Database } from './database/types';
 import { DB } from './database/database.module';
 import { and, desc, isNotNull, eq, or, count } from 'drizzle-orm';
-import { movies, ratings } from './database/schemas';
+import { movies, ratings, watchList } from './database/schemas';
 
 @Injectable()
 export class AppService {
@@ -77,5 +77,22 @@ export class AppService {
       const finalResults = await Promise.all(_results);
 
       return finalResults;
+   }
+
+   public async getMyWatchList(userId: number) {
+      const result = await this.db
+         .select({
+            id: movies.id,
+            title: movies.title,
+            ratings: movies.rating,
+            posterUrl: movies.posterUrl,
+            trailerUrl: movies.trailerUrl,
+         })
+         .from(watchList)
+         .leftJoin(movies, eq(watchList.movieId, movies.id))
+         .where(eq(watchList.userId, userId))
+         .limit(10);
+
+      return result;
    }
 }
