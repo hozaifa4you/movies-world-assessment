@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { IconStarFilled } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import { PutRating } from '../put-rating';
 
 export interface MovieCardProps {
    id: number;
@@ -82,22 +83,7 @@ const MovieCard = ({
 
                   {pathname === '/movies' ? (
                      <>
-                        <Button
-                           disabled={userRating}
-                           className={cn(
-                              'group font-semibold text-white transition-all',
-                              { 'text-secondary': userRating },
-                           )}
-                           size="sm"
-                           variant="outline"
-                        >
-                           {userRating ? (
-                              <IconStarFilled className="text-secondary mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                           ) : (
-                              <StarIcon className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
-                           )}
-                           Rate
-                        </Button>
+                        <PutRating movieId={id} userRating={userRating} />
                      </>
                   ) : (
                      <>
