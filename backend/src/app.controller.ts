@@ -6,7 +6,12 @@ export class AppController {
    constructor(private readonly appService: AppService) {}
 
    @Get('hero-content')
-   public async getHeroContent() {
+   public async getHeroMovies() {
       return this.appService.getHeroContent();
+   }
+
+   @Get('recent-movies')
+   public async getRecentMovies() {
+      return this.appService.getRecentMovies();
    }
 }

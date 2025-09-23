@@ -34,4 +34,19 @@ export class AppService {
 
       return moviesResult;
    }
+
+   public async getRecentMovies() {
+      const recentMovies = await this.db.query.movies.findMany({
+         limit: 5,
+         orderBy: desc(movies.createdAt),
+         where: isNotNull(movies.posterUrl),
+         columns: {
+            id: true,
+            posterUrl: true,
+            trailerUrl: true,
+         },
+      });
+
+      return recentMovies;
+   }
 }
