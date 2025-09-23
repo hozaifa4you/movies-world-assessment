@@ -26,6 +26,8 @@ import { createMovie } from '@/actions/movie.action';
 import Form from 'next/form';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { env } from '@/config/env';
+import { useAuth } from '@/hooks/use-auth';
 
 export interface ActorType {
    name: string;
@@ -36,7 +38,6 @@ export interface ActorType {
 }
 
 const CreateMovePage = () => {
-   const [poster, setPoster] = useState<File | null>(null);
    const [posterPreview, setPosterPreview] = useState<string>('');
    const [newGenre, setNewGenre] = useState('');
    const [genre, setGenre] = useState<string[]>([]);
@@ -45,9 +46,11 @@ const CreateMovePage = () => {
    const [actors, setActors] = useState<ActorType[]>([]);
    const actorsRef = useRef<HTMLInputElement | null>(null);
    const genreRef = useRef<HTMLInputElement | null>(null);
+   const posterRef = useRef<HTMLInputElement | null>(null);
    const releaseDateRef = useRef<HTMLInputElement | null>(null);
    const [state, action, pending] = useActionState(createMovie, null);
    const router = useRouter();
+   const session = useAuth();
 
    const setActorsWithRef = (actor: ActorType) => {
       setActors((prev) => [...prev, actor]);
@@ -56,17 +59,40 @@ const CreateMovePage = () => {
       }
    };
 
-   const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handlePosterChange = async (
+      e: React.ChangeEvent<HTMLInputElement>,
+   ) => {
       const file = e.target.files?.[0];
       if (file) {
-         setPoster(file);
-         const reader = new FileReader();
-         reader.onload = (e) => {
-            setPosterPreview(e.target?.result as string);
-         };
-         reader.readAsDataURL(file);
+         const formData = new FormData();
+         formData.append('poster', file);
+
+         const response = await fetch(
+            `${env.nextPublicApiUrl}/api/v1/uploads/poster`,
+            {
+               method: 'POST',
+               headers: {
+                  Authorization: `Bearer ${session?.access_token}`,
+               },
+               body: formData,
+            },
+         );
+
+         if (!response.ok) {
+            toast.error('Poster Upload', {
+               description: 'Failed to upload poster. Please try again.',
+            });
+         }
+
+         const data = await response.json();
+         setPosterPreview(data.url);
+         if (posterRef.current) {
+            posterRef.current.value = data.url;
+         }
       }
    };
+
+   const handlePosterRemove = (postUrl: string) => {};
 
    const addGenre = (_genre: string) => {
       if (genre && !genre.includes(_genre)) {
@@ -147,7 +173,6 @@ const CreateMovePage = () => {
                                  size="sm"
                                  className="absolute top-2 right-2"
                                  onClick={() => {
-                                    setPoster(null);
                                     setPosterPreview('');
                                  }}
                               >
@@ -172,14 +197,21 @@ const CreateMovePage = () => {
                            className="hidden"
                            id="poster-upload"
                         />
+
+                        <input
+                           type="text"
+                           name="poster"
+                           className="sr-only"
+                           ref={posterRef}
+                        />
                         <Label
                            htmlFor="poster-upload"
-                           className="cursor-pointer"
+                           className="inline-block cursor-pointer"
                         >
-                           <Button type="button" variant="outline">
-                              <Upload className="mr-2 h-4 w-4" />
+                           <div className="border-input bg-background ring-offset-background hover:bg-accent hover:text-accent-foreground flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm">
+                              <Upload className="h-4 w-4" />
                               Choose Poster
-                           </Button>
+                           </div>
                         </Label>
                      </div>
                   </CardContent>
