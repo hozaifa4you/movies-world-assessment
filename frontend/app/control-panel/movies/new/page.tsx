@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,24 +22,9 @@ import {
 } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { SearchActor } from '@/components/admin-only/search-actor';
-
-interface MovieData {
-   title: string;
-   description: string;
-   shortDescription: string;
-   director: string;
-   releaseDate: string;
-   genre: string[];
-   rating: number;
-   duration: number;
-   language: string;
-   country: string;
-   budget: number;
-   revenue: number;
-   imdbRating: number;
-   imdbId: string;
-   status: string;
-}
+import { createMovie } from '@/actions/movie.action';
+import Form from 'next/form';
+import { toast } from 'sonner';
 
 export interface ActorType {
    name: string;
@@ -50,33 +35,18 @@ export interface ActorType {
 }
 
 const CreateMovePage = () => {
-   const [movieData, setMovieData] = useState<MovieData>({
-      title: '',
-      description: '',
-      shortDescription: '',
-      director: '',
-      releaseDate: '',
-      genre: [],
-      rating: 0,
-      duration: 0,
-      language: '',
-      country: '',
-      budget: 0,
-      revenue: 0,
-      imdbRating: 0,
-      imdbId: '',
-      status: 'upcoming',
-   });
-
    const [poster, setPoster] = useState<File | null>(null);
    const [posterPreview, setPosterPreview] = useState<string>('');
    const [newGenre, setNewGenre] = useState('');
+   const [genre, setGenre] = useState<string[]>([]);
    const [releaseDate, setReleaseDate] = useState<Date>();
    const statusOptions = ['upcoming', 'released', 'in-production', 'cancelled'];
    const [actors, setActors] = useState<ActorType[]>([]);
    const actorsRef = useRef<HTMLInputElement | null>(null);
    const genreRef = useRef<HTMLInputElement | null>(null);
    const releaseDateRef = useRef<HTMLInputElement | null>(null);
+   const [state, action, pending] = useActionState(createMovie, null);
+   const [] = useState();
 
    const setActorsWithRef = (actor: ActorType) => {
       setActors((prev) => [...prev, actor]);
@@ -97,28 +67,22 @@ const CreateMovePage = () => {
       }
    };
 
-   const addGenre = (genre: string) => {
-      if (genre && !movieData.genre.includes(genre)) {
-         setMovieData((prev) => ({
-            ...prev,
-            genre: [...prev.genre, genre],
-         }));
+   const addGenre = (_genre: string) => {
+      if (genre && !genre.includes(_genre)) {
+         setGenre((prev) => [...prev, _genre]);
       }
       setNewGenre('');
       if (genreRef.current) {
-         genreRef.current.value = JSON.stringify([...movieData.genre, genre]);
+         genreRef.current.value = JSON.stringify([...genre, _genre]);
       }
    };
 
    const removeGenre = (genreToRemove: string) => {
-      setMovieData((prev) => ({
-         ...prev,
-         genre: prev.genre.filter((g) => g !== genreToRemove),
-      }));
+      setGenre((prev) => prev.filter((g) => g !== genreToRemove));
 
       if (genreRef.current) {
          genreRef.current.value = JSON.stringify(
-            movieData.genre.filter((g) => g !== genreToRemove),
+            genre.filter((g) => g !== genreToRemove),
          );
       }
    };
@@ -135,16 +99,23 @@ const CreateMovePage = () => {
    const handleDateSelect = (date: Date | undefined) => {
       setReleaseDate(date);
       if (date) {
-         setMovieData((prev) => ({
-            ...prev,
-            releaseDate: format(date, 'yyyy-MM-dd'),
-         }));
-
          if (releaseDateRef.current) {
             releaseDateRef.current.value = format(date, 'yyyy-MM-dd');
          }
       }
    };
+
+   useEffect(() => {
+      if (state?.error && !state.success) {
+         toast.error('Create Failed', { description: state.error.toString() });
+      }
+
+      if (state?.success) {
+         toast.success('Create Done', {
+            description: 'Movie has been created successfully.',
+         });
+      }
+   }, [state?.error, state?.success]);
 
    return (
       <div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
@@ -152,7 +123,7 @@ const CreateMovePage = () => {
             <h1 className="text-2xl font-bold">Create New Movie</h1>
          </div>
 
-         <form className="space-y-6">
+         <Form action={action} className="space-y-6">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                {/* Poster Upload Section */}
                <Card className="lg:col-span-1">
@@ -220,23 +191,40 @@ const CreateMovePage = () => {
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                           <Label htmlFor="title">Title *</Label>
+                           <Label htmlFor="title">
+                              Title<small className="text-secondary">*</small>
+                           </Label>
                            <Input
                               id="title"
                               placeholder="Enter movie title"
                               required
                               name="title"
                            />
+
+                           {state?.errors?.title && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.title}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
-                           <Label htmlFor="director">Director *</Label>
+                           <Label htmlFor="director">
+                              Director
+                              <small className="text-secondary">*</small>
+                           </Label>
                            <Input
                               id="director"
                               placeholder="Enter director name"
                               required
                               name="director"
                            />
+
+                           {state?.errors?.director && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.director}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
@@ -246,6 +234,12 @@ const CreateMovePage = () => {
                               placeholder="e.g., English, Bangla"
                               name="language"
                            />
+
+                           {state?.errors?.language && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.language}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
@@ -255,20 +249,38 @@ const CreateMovePage = () => {
                               placeholder="e.g., Bangladesh, USA"
                               name="country"
                            />
+
+                           {state?.errors?.country && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.country}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
-                           <Label htmlFor="duration">Duration (minutes)</Label>
+                           <Label htmlFor="duration">
+                              Duration
+                              <small className="text-secondary">*</small>{' '}
+                              (minutes)
+                           </Label>
                            <Input
                               id="duration"
                               type="number"
                               placeholder="120"
                               name="duration"
                            />
+
+                           {state?.errors?.duration && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.duration}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
-                           <Label htmlFor="status">Status</Label>
+                           <Label htmlFor="status">
+                              Status<small className="text-secondary">*</small>
+                           </Label>
                            <Select name="status">
                               <SelectTrigger>
                                  <SelectValue placeholder="Select status" />
@@ -282,6 +294,12 @@ const CreateMovePage = () => {
                                  ))}
                               </SelectContent>
                            </Select>
+
+                           {state?.errors?.status && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.status}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
@@ -308,20 +326,17 @@ const CreateMovePage = () => {
                               </PopoverContent>
                            </Popover>
 
+                           {state?.errors?.releaseDate && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.releaseDate}
+                              </p>
+                           )}
+
                            <input
                               type="date"
                               ref={releaseDateRef}
                               className="sr-only"
                               name="releaseDate"
-                           />
-                        </div>
-
-                        <div className="space-y-2">
-                           <Label htmlFor="imdbId">IMDB ID</Label>
-                           <Input
-                              id="imdbId"
-                              placeholder="e.g., tt1234567"
-                              name="imdbId"
                            />
                         </div>
                      </div>
@@ -336,6 +351,12 @@ const CreateMovePage = () => {
                            rows={2}
                            name="shortDescription"
                         />
+
+                        {state?.errors?.shortDescription && (
+                           <p className="text-secondary text-sm">
+                              {state.errors.shortDescription}
+                           </p>
+                        )}
                      </div>
 
                      <div className="space-y-2">
@@ -344,7 +365,14 @@ const CreateMovePage = () => {
                            id="description"
                            placeholder="Detailed movie description"
                            rows={4}
+                           name="description"
                         />
+
+                        {state?.errors?.description && (
+                           <p className="text-secondary text-sm">
+                              {state.errors.description}
+                           </p>
+                        )}
                      </div>
                   </CardContent>
                </Card>
@@ -366,6 +394,12 @@ const CreateMovePage = () => {
                               name="imdbId"
                               placeholder="e.g., tt1234567"
                            />
+
+                           {state?.errors?.imdbId && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.imdbId}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
@@ -379,7 +413,14 @@ const CreateMovePage = () => {
                               min="0"
                               max="10"
                               placeholder="8.6"
+                              name="imdbRating"
                            />
+
+                           {state?.errors?.imdbRating && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.imdbRating}
+                              </p>
+                           )}
                         </div>
                      </div>
                   </CardContent>
@@ -401,6 +442,12 @@ const CreateMovePage = () => {
                               placeholder="12.00"
                               name="budget"
                            />
+
+                           {state?.errors?.budget && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.budget}
+                              </p>
+                           )}
                         </div>
 
                         <div className="space-y-2">
@@ -413,6 +460,12 @@ const CreateMovePage = () => {
                               placeholder="32.54"
                               name="revenue"
                            />
+
+                           {state?.errors?.revenue && (
+                              <p className="text-secondary text-sm">
+                                 {state.errors.revenue}
+                              </p>
+                           )}
                         </div>
                      </div>
                   </CardContent>
@@ -422,12 +475,14 @@ const CreateMovePage = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                <Card>
                   <CardHeader>
-                     <CardTitle>Genres</CardTitle>
+                     <CardTitle>
+                        Genres<small className="text-secondary">*</small>
+                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                     {movieData.genre.length > 0 && (
+                     {genre.length > 0 && (
                         <div className="mb-4 flex flex-wrap gap-2">
-                           {movieData.genre.map((genre) => (
+                           {genre.map((genre) => (
                               <Badge
                                  key={genre}
                                  variant="secondary"
@@ -459,6 +514,12 @@ const CreateMovePage = () => {
                            }}
                         />
 
+                        {state?.errors?.genre && (
+                           <p className="text-secondary text-sm">
+                              {state.errors.genre}
+                           </p>
+                        )}
+
                         <input
                            type="text"
                            ref={genreRef}
@@ -471,7 +532,9 @@ const CreateMovePage = () => {
 
                <Card>
                   <CardHeader>
-                     <CardTitle>Actors</CardTitle>
+                     <CardTitle>
+                        Actors<small className="text-secondary">*</small>
+                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                      {actors.length > 0 && (
@@ -500,7 +563,18 @@ const CreateMovePage = () => {
                         setActors={setActorsWithRef}
                      />
 
-                     <input type="text" ref={actorsRef} className="sr-only" />
+                     {state?.errors?.actors && (
+                        <p className="text-secondary text-sm">
+                           {state.errors.actors}
+                        </p>
+                     )}
+
+                     <input
+                        type="text"
+                        ref={actorsRef}
+                        className="sr-only"
+                        name="actors"
+                     />
                   </CardContent>
                </Card>
             </div>
@@ -510,9 +584,11 @@ const CreateMovePage = () => {
                <Button type="button" variant="outline">
                   Cancel
                </Button>
-               <Button type="submit">Create Movie</Button>
+               <Button isLoading={pending} type="submit">
+                  Create Movie
+               </Button>
             </div>
-         </form>
+         </Form>
       </div>
    );
 };
