@@ -39,14 +39,6 @@ const Navbar = () => {
                   ))}
                </menu>
 
-               <Button
-                  className="text-sm font-medium"
-                  size="icon"
-                  variant="default"
-               >
-                  En
-               </Button>
-
                <Button className="" size="icon" variant="ghost">
                   <User />
                </Button>

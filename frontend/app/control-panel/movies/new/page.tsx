@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -41,7 +41,8 @@ interface MovieData {
    status: string;
 }
 
-interface ActorType {
+export interface ActorType {
+   name: string;
    actorId: number;
    character?: string;
    role?: string;
@@ -73,6 +74,16 @@ const CreateMovePage = () => {
    const [releaseDate, setReleaseDate] = useState<Date>();
    const statusOptions = ['upcoming', 'released', 'in-production', 'cancelled'];
    const [actors, setActors] = useState<ActorType[]>([]);
+   const actorsRef = useRef<HTMLInputElement | null>(null);
+   const genreRef = useRef<HTMLInputElement | null>(null);
+   const releaseDateRef = useRef<HTMLInputElement | null>(null);
+
+   const setActorsWithRef = (actor: ActorType) => {
+      setActors((prev) => [...prev, actor]);
+      if (actorsRef.current) {
+         actorsRef.current.value = JSON.stringify([...actors, actor]);
+      }
+   };
 
    const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -94,6 +105,9 @@ const CreateMovePage = () => {
          }));
       }
       setNewGenre('');
+      if (genreRef.current) {
+         genreRef.current.value = JSON.stringify([...movieData.genre, genre]);
+      }
    };
 
    const removeGenre = (genreToRemove: string) => {
@@ -101,6 +115,21 @@ const CreateMovePage = () => {
          ...prev,
          genre: prev.genre.filter((g) => g !== genreToRemove),
       }));
+
+      if (genreRef.current) {
+         genreRef.current.value = JSON.stringify(
+            movieData.genre.filter((g) => g !== genreToRemove),
+         );
+      }
+   };
+
+   const removeActor = (actorId: number) => {
+      setActors((prev) => prev.filter((actor) => actor.actorId !== actorId));
+      if (actorsRef.current) {
+         actorsRef.current.value = JSON.stringify(
+            actors.filter((actor) => actor.actorId !== actorId),
+         );
+      }
    };
 
    const handleDateSelect = (date: Date | undefined) => {
@@ -110,6 +139,10 @@ const CreateMovePage = () => {
             ...prev,
             releaseDate: format(date, 'yyyy-MM-dd'),
          }));
+
+         if (releaseDateRef.current) {
+            releaseDateRef.current.value = format(date, 'yyyy-MM-dd');
+         }
       }
    };
 
@@ -192,6 +225,7 @@ const CreateMovePage = () => {
                               id="title"
                               placeholder="Enter movie title"
                               required
+                              name="title"
                            />
                         </div>
 
@@ -201,6 +235,7 @@ const CreateMovePage = () => {
                               id="director"
                               placeholder="Enter director name"
                               required
+                              name="director"
                            />
                         </div>
 
@@ -209,6 +244,7 @@ const CreateMovePage = () => {
                            <Input
                               id="language"
                               placeholder="e.g., English, Bangla"
+                              name="language"
                            />
                         </div>
 
@@ -217,6 +253,7 @@ const CreateMovePage = () => {
                            <Input
                               id="country"
                               placeholder="e.g., Bangladesh, USA"
+                              name="country"
                            />
                         </div>
 
@@ -226,6 +263,7 @@ const CreateMovePage = () => {
                               id="duration"
                               type="number"
                               placeholder="120"
+                              name="duration"
                            />
                         </div>
 
@@ -269,11 +307,22 @@ const CreateMovePage = () => {
                                  />
                               </PopoverContent>
                            </Popover>
+
+                           <input
+                              type="date"
+                              ref={releaseDateRef}
+                              className="sr-only"
+                              name="releaseDate"
+                           />
                         </div>
 
                         <div className="space-y-2">
                            <Label htmlFor="imdbId">IMDB ID</Label>
-                           <Input id="imdbId" placeholder="e.g., tt1234567" />
+                           <Input
+                              id="imdbId"
+                              placeholder="e.g., tt1234567"
+                              name="imdbId"
+                           />
                         </div>
                      </div>
 
@@ -285,6 +334,7 @@ const CreateMovePage = () => {
                            id="shortDescription"
                            placeholder="Brief description (1-2 sentences)"
                            rows={2}
+                           name="shortDescription"
                         />
                      </div>
 
@@ -304,19 +354,17 @@ const CreateMovePage = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                <Card>
                   <CardHeader>
-                     <CardTitle>Ratings</CardTitle>
+                     <CardTitle>IMDB</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                           <Label htmlFor="rating">Rating (0-10)</Label>
+                           <Label htmlFor="imdb-id">IMDB ID (0-10)</Label>
                            <Input
-                              id="rating"
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="10"
-                              placeholder="6.5"
+                              id="imdb-id"
+                              type="text"
+                              name="imdbId"
+                              placeholder="e.g., tt1234567"
                            />
                         </div>
 
@@ -351,6 +399,7 @@ const CreateMovePage = () => {
                               step="0.01"
                               min="0"
                               placeholder="12.00"
+                              name="budget"
                            />
                         </div>
 
@@ -362,6 +411,7 @@ const CreateMovePage = () => {
                               step="0.01"
                               min="0"
                               placeholder="32.54"
+                              name="revenue"
                            />
                         </div>
                      </div>
@@ -408,6 +458,13 @@ const CreateMovePage = () => {
                               }
                            }}
                         />
+
+                        <input
+                           type="text"
+                           ref={genreRef}
+                           className="sr-only"
+                           name="genre"
+                        />
                      </div>
                   </CardContent>
                </Card>
@@ -417,7 +474,33 @@ const CreateMovePage = () => {
                      <CardTitle>Actors</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                     <SearchActor />
+                     {actors.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2">
+                           {actors.map((actor) => (
+                              <Badge
+                                 key={actor.actorId}
+                                 variant="secondary"
+                                 className="px-3 py-1"
+                              >
+                                 {actor.name}
+                                 <button
+                                    type="button"
+                                    onClick={() => removeActor(actor.actorId)}
+                                    className="ml-2 text-red-500 hover:text-red-700"
+                                 >
+                                    <X className="h-3 w-3" />
+                                 </button>
+                              </Badge>
+                           ))}
+                        </div>
+                     )}
+
+                     <SearchActor
+                        actors={actors}
+                        setActors={setActorsWithRef}
+                     />
+
+                     <input type="text" ref={actorsRef} className="sr-only" />
                   </CardContent>
                </Card>
             </div>
