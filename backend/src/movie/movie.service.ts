@@ -10,7 +10,8 @@ import {
    type NewMovie,
    type NewMoviesActors,
 } from 'src/database/schemas';
-import { eq } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
+import { PaginationQuery } from 'src/common/pipes/pagination.pipe';
 
 @Injectable()
 export class MovieService {
@@ -77,8 +78,45 @@ export class MovieService {
       });
    }
 
-   findAll() {
-      return `This action returns all movie`;
+   async findAll(pagination: PaginationQuery) {
+      const { page, pageSize } = pagination;
+      const offset = (page - 1) * pageSize;
+
+      // Get total count for pagination metadata
+      const [totalCount] = await this.db
+         .select({ count: count() })
+         .from(movies);
+
+      // Get movies with pagination and ordering
+      const moviesList = await this.db.query.movies.findMany({
+         limit: pageSize,
+         offset,
+         orderBy: [desc(movies.createdAt)],
+         columns: {
+            id: true,
+            title: true,
+            posterUrl: true,
+            genre: true,
+            shortDescription: true,
+            releaseDate: true,
+            rating: true,
+            trailerUrl: true,
+         },
+      });
+
+      const totalPages = Math.ceil(totalCount.count / pageSize);
+
+      return {
+         data: moviesList,
+         pagination: {
+            page,
+            limit: pageSize,
+            total: totalCount.count,
+            totalPages,
+            hasNext: page < totalPages,
+            hasPrev: page > 1,
+         },
+      };
    }
 
    findOne(id: number) {
