@@ -46,7 +46,7 @@ const MovieCard = ({
                      <div className="ml-auto flex items-center gap-1">
                         <StarIcon className="h-4 w-4 fill-current text-yellow-400" />
                         <span className="text-sm font-semibold text-white">
-                           {rating}
+                           {rating ?? 0}/10
                         </span>
                      </div>
                   </div>

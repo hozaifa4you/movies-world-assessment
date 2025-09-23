@@ -2,6 +2,7 @@ import { MovieCard, MovieCardProps } from '@/components/admin-only/move-card';
 import { MoveHeader } from '@/components/admin-only/movie-header';
 import { fetchWithoutAuth } from '@/lib/authFetch';
 import { PaginationInfo } from '@/types/common';
+import { Pagination } from '@/components/ui/pagination';
 
 const MoviesPage = async ({
    searchParams,
@@ -35,6 +36,20 @@ const MoviesPage = async ({
                <MovieCard key={move.id} {...move} />
             ))}
          </div>
+
+         {/* Pagination */}
+         {paginationInfo.totalPages > 1 && (
+            <div className="mt-6">
+               <Pagination
+                  currentPage={paginationInfo.page}
+                  totalPages={paginationInfo.totalPages}
+                  hasNext={paginationInfo.hasNext}
+                  hasPrev={paginationInfo.hasPrev}
+                  total={paginationInfo.total}
+                  pageSize={paginationInfo.limit}
+               />
+            </div>
+         )}
       </div>
    );
 };
